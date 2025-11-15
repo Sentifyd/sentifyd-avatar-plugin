@@ -5,8 +5,8 @@
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
  * Version:           1.0.0
  * Requires at least: 6.3
- * Author:            Sentifyd
- * Author URI:        https://sentifyd.io
+ * Author:            Sentifyd.io
+ * Author URI:        https://sentifyd.io/about-us
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       sentifyd-avatar
