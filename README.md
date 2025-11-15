@@ -14,6 +14,10 @@ The **Sentifyd Avatar** plugin allows you to quickly integrate AI-powered 3D ava
 
 ### What are Sentifyd 3D AI Agents?
 
+<p align="center">
+  <img src="assets/icon-256x256.png" alt="Sentifyd Avatar Icon" width="256">
+</p>
+
 Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully animated avatars capable of natural, voice-driven conversations. These interactive 3D agents combine:
 
 - **Retrieval-Augmented Generation (RAG)**: Access and reason over your own content (manuals, FAQs, documents)
@@ -61,6 +65,8 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 5. **Verify Installation**
    - Visit your website's front-end
    - The avatar should appear in the bottom-right corner (default toggler mode)
+
+![Avatar Deployed](assets/screenshot-5.png)
 
 ### Manual Installation
 
