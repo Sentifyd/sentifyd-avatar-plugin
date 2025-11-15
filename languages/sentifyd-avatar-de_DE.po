@@ -1,0 +1,263 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Sentifyd Avatar 1.0.0\n"
+"Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
+"POT-Creation-Date: 2025-11-12 15:08+0200\n"
+"PO-Revision-Date: 2025-11-12 15:33+0200\n"
+"Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
+"Language-Team: Deutsch\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: sentifyd-avatar\n"
+"X-Generator: Poedit 3.8\n"
+
+#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:339
+msgid "Sentifyd Avatar"
+msgstr "Sentifyd Avatar"
+
+#: sentifyd-avatar.php:64
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: sentifyd-avatar.php:171
+msgid "Avatar Settings"
+msgstr "Avatar-Einstellungen"
+
+#: sentifyd-avatar.php:178
+msgid "Enter your avatar API Key"
+msgstr "Geben Sie Ihren Avatar-API-Schlüssel ein"
+
+#: sentifyd-avatar.php:186
+msgid "Avatar ID"
+msgstr "Avatar-ID"
+
+#: sentifyd-avatar.php:194
+msgid "Secure Token Endpoint"
+msgstr "Sicherer Token-Endpunkt"
+
+#: sentifyd-avatar.php:202
+msgid "Other Avatar Attributes"
+msgstr "Weitere Avatar-Attribute"
+
+#: sentifyd-avatar.php:209
+msgid "Enable Toggler"
+msgstr "Toggler aktivieren"
+
+#: sentifyd-avatar.php:217
+msgid "Compact Mode"
+msgstr "Kompaktmodus"
+
+#: sentifyd-avatar.php:225
+msgid "Enable Captions"
+msgstr "Untertitel aktivieren"
+
+#: sentifyd-avatar.php:233
+msgid "Branding Attributes"
+msgstr "Branding-Attribute"
+
+#: sentifyd-avatar.php:240
+msgid "Brand Name"
+msgstr "Markenname"
+
+#: sentifyd-avatar.php:248
+msgid "Brand Logo URL"
+msgstr "Markenlogo-URL"
+
+#: sentifyd-avatar.php:256
+msgid "Terms Link"
+msgstr "Link zu den Nutzungsbedingungen"
+
+#: sentifyd-avatar.php:264
+msgid "Privacy Link"
+msgstr "Link zur Datenschutzerklärung"
+
+#: sentifyd-avatar.php:275
+msgid "Avatar Widget Theme"
+msgstr "Avatar-Widget-Thema"
+
+#: sentifyd-avatar.php:277
+msgid ""
+"Customize the avatar widget theme. Leave blank to use built-in defaults."
+msgstr ""
+"Passen Sie das Avatar-Widget-Design an. Lassen Sie das Feld leer, um die "
+"integrierten Standardeinstellungen zu verwenden."
+
+#: sentifyd-avatar.php:284
+msgid "Avatar Background"
+msgstr "Avatar-Hintergrund"
+
+#: sentifyd-avatar.php:292
+msgid "Curved Corner Radius"
+msgstr "Gebogener Eckradius"
+
+#: sentifyd-avatar.php:300
+msgid "Primary color"
+msgstr "Primärfarbe"
+
+#: sentifyd-avatar.php:307
+msgid "Secondary color"
+msgstr "Sekundärfarbe"
+
+#: sentifyd-avatar.php:314
+msgid "Text color primary on background"
+msgstr "Textfarbe primär auf dem Hintergrund"
+
+#: sentifyd-avatar.php:321
+msgid "Text color on secondary background"
+msgstr "Textfarbe auf sekundärem Hintergrund"
+
+#: sentifyd-avatar.php:334
+msgid ""
+"This plugin embeds the Sentifyd avatar web component which stores session-"
+"scoped data in the browser (sessionStorage) to maintain UI state and "
+"conversation context. Keys may include avatar open/closed state, "
+"authentication data such as short-lived tokens, and conversation transcript. "
+"Data clears when the tab/window closes. No data is stored in cookies or "
+"local storage by the widget."
+msgstr ""
+"Dieses Plugin bettet die Sentifyd-Avatar-Webkomponente ein, die "
+"sitzungsbezogene Daten im Browser (sessionStorage) speichert, um den UI-"
+"Zustand und den Gesprächskontext aufrechtzuerhalten. Schlüssel können den "
+"geöffnet/geschlossenen Zustand des Avatars, Authentifizierungsdaten wie "
+"kurzlebige Tokens und Gesprächstranskript umfassen. Daten werden gelöscht, "
+"wenn der Tab/Browser geschlossen wird. Es werden keine Daten in Cookies oder "
+"Local Storage durch das Widget gespeichert."
+
+#: sentifyd-avatar.php:359
+msgid "Show API Key"
+msgstr "API-Schlüssel anzeigen"
+
+#: sentifyd-avatar.php:359
+msgid "Hide API Key"
+msgstr "API-Schlüssel verbergen"
+
+#: sentifyd-avatar.php:363
+msgid ""
+"Stored server-side only and used to mint short-lived tokens; never exposed "
+"in the browser DOM. Required unless you provide a custom token endpoint."
+msgstr ""
+"Wird nur serverseitig gespeichert und zum Erstellen von kurzlebigen Tokens "
+"verwendet; wird niemals im Browser-DOM angezeigt. Erforderlich, es sei denn, "
+"Sie geben einen benutzerdefinierten Token-Endpunkt an."
+
+#: sentifyd-avatar.php:370
+msgid "Required"
+msgstr "Erforderlich"
+
+#: sentifyd-avatar.php:370
+msgid "Find your Avatar ID in the avatar page in Sentifyd platform."
+msgstr "Finden Sie Ihre Avatar-ID auf der Avatar-Seite der Sentifyd-Plattform."
+
+#: sentifyd-avatar.php:377
+msgid ""
+"Optional. If provided, the avatar will call your secure token endpoint to "
+"obtain short-lived session tokens. If omitted, this plugin uses its built-in "
+"WordPress REST endpoint to mint tokens using your stored API key (which is "
+"never exposed to the browser)."
+msgstr ""
+"Optional. Falls angegeben, ruft der Avatar Ihren sicheren Token-Endpunkt "
+"auf, um kurzlebige Sitzungs-Tokens zu erhalten. Wenn weggelassen, verwendet "
+"dieses Plugin seinen integrierten WordPress-REST-Endpunkt, um Tokens mit "
+"Ihrem gespeicherten API-Schlüssel zu erstellen (der niemals dem Browser "
+"ausgesetzt wird)."
+
+#: sentifyd-avatar.php:385
+msgid "Display the avatar as a minimizable toggler (bottom-right style)."
+msgstr "Avatar als minimierbaren Toggler anzeigen (unten rechts)."
+
+#: sentifyd-avatar.php:387
+msgid ""
+"When enabled (default), the plugin auto-injects the toggler on each page. "
+"When disabled, the avatar will not auto-inject;"
+msgstr ""
+"Wenn aktiviert (Standard), fügt das Plugin den Toggler automatisch auf jeder "
+"Seite ein. Wenn deaktiviert, wird der Avatar nicht automatisch eingefügt;"
+
+#: sentifyd-avatar.php:392
+#, php-format
+msgid "place it where you want using the shortcode %s."
+msgstr "platzieren Sie ihn mit dem Shortcode %s an der gewünschten Stelle."
+
+#: sentifyd-avatar.php:405
+msgid "Displays the avatar without the header or footer."
+msgstr "Zeigt den Avatar ohne Kopf- oder Fußbereich an."
+
+#: sentifyd-avatar.php:413
+msgid "Show captions on the avatar by default."
+msgstr "Untertitel standardmäßig im Avatar anzeigen."
+
+#: sentifyd-avatar.php:420
+msgid "Full URL to your Terms of Service."
+msgstr "Vollständige URL zu Ihren Nutzungsbedingungen."
+
+#: sentifyd-avatar.php:427
+msgid "Full URL to your Privacy Policy."
+msgstr "Vollständige URL zu Ihrer Datenschutzerklärung."
+
+#: sentifyd-avatar.php:434
+msgid ""
+"The name of your brand or institution, used in the exported transcripts."
+msgstr ""
+"Der Name Ihrer Marke oder Institution, verwendet in den exportierten "
+"Transkripten."
+
+#: sentifyd-avatar.php:441
+msgid "The URL of the logo image displayed in the avatar's header."
+msgstr "Die URL des im Kopfbereich des Avatars angezeigten Logos."
+
+#: sentifyd-avatar.php:447
+msgid "#ffffff or transparent"
+msgstr "#ffffff oder transparent"
+
+#: sentifyd-avatar.php:448
+msgid ""
+"Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
+"rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
+msgstr ""
+"Hintergrund hinter dem Avatar. Akzeptiert einen CSS-Farbwert (z. B. #ffffff, "
+"rgb(0 0 0 / 0.5) oder linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
+
+#: sentifyd-avatar.php:454
+msgid "12px, 1rem, 50%"
+msgstr "12px, 1rem, 50%"
+
+#: sentifyd-avatar.php:455
+msgid ""
+"Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
+"12px, 1rem, 50%). Set to 0 for square corners."
+msgstr ""
+"Gebogener Eckradius für das Avatar-Widget. Akzeptiert CSS-Längenwerte (z. B. "
+"12px, 1rem, 50 %). Für eckige Ecken auf 0 setzen."
+
+#: sentifyd-avatar.php:518
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: sentifyd-avatar.php:524
+msgid "Sentifyd Account Management"
+msgstr "Sentifyd-Kontoverwaltung"
+
+#: sentifyd-avatar.php:525
+msgid "Manage your Sentifyd account and conversation credits."
+msgstr "Verwalten Sie Ihr Sentifyd-Konto und Gesprächsguthaben."
+
+#: sentifyd-avatar.php:528
+msgid "Visit Sentifyd.io"
+msgstr "Besuchen Sie Sentifyd.io"
+
+#~ msgid "Radius Corner"
+#~ msgstr "Eckenradius"
+
+#~ msgid "Change Colors (Optional)"
+#~ msgstr "Farben ändern (optional)"
+
+#~ msgid "Use the Color fields below to change the avatar plugin colors."
+#~ msgstr ""
+#~ "Verwenden Sie die untenstehenden Farbfelder, um die Farben des Avatar-"
+#~ "Plugins zu ändern."
+
+#~ msgid "Color Variables"
+#~ msgstr "Farbvariablen"
