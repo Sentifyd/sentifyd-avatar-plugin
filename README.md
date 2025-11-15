@@ -1,5 +1,7 @@
 # Sentifyd Avatar WordPress Plugin
 
+![Sentifyd Avatar Banner](assets/banner-1544x500.jpg)
+
 ![License](https://img.shields.io/badge/license-GPLv2%20or%20later-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-6.3%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
