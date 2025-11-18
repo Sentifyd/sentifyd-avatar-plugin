@@ -15,7 +15,8 @@ The **Sentifyd Avatar** plugin allows you to quickly integrate AI-powered 3D ava
 ### What are Sentifyd 3D AI Agents?
 
 <p align="center">
-  <img src="assets/icon-256x256.png" alt="Sentifyd Avatar Icon" width="256" style="background-color: white">
+<div style="background-color: white;">
+  <img src="assets/icon-256x256.png" alt="Sentifyd Avatar Icon" width="256" style="background-color: white"></div>
 </p>
 
 Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully animated avatars capable of natural, voice-driven conversations. These interactive 3D agents combine:
