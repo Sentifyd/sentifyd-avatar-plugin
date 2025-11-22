@@ -32,6 +32,9 @@ jobs:
             -x "*.log" \
             -x "Thumbs.db" \
             -x ".DS_Store" \
+            -x "assets/*" \
+            -x "build.ps1" \
+            -x "dist/*" \
             -x "README.md" # keep readme.txt (WordPress standard)
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
 
