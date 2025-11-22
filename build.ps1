@@ -31,8 +31,6 @@ $includeList = @(
     "uninstall.php",
     "readme.txt",
     "LICENSE",
-    "README.md",
-    "assets",
     "languages"
 )
 

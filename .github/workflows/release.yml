@@ -20,22 +20,32 @@ jobs:
       - name: Set up zip packaging
         run: |
           echo "Preparing plugin package for tag: $GITHUB_REF_NAME"
+          PLUGIN_SLUG="sentifyd-avatar"
           PACKAGE_NAME="sentifyd-avatar-plugin-${GITHUB_REF_NAME}.zip"
-          # Create zip excluding CI/config/dev artifacts
-          zip -r "$PACKAGE_NAME" . \
-            -x ".git*" \
-            -x ".github/*" \
-            -x "node_modules/*" \
-            -x "*.zip" \
-            -x "*.tar.gz" \
-            -x ".vscode/*" \
-            -x "*.log" \
-            -x "Thumbs.db" \
-            -x ".DS_Store" \
-            -x "assets/*" \
-            -x "build.ps1" \
-            -x "dist/*" \
-            -x "README.md" # keep readme.txt (WordPress standard)
+          
+          # Create staging directory
+          mkdir -p "$PLUGIN_SLUG"
+          
+          # Copy files excluding dev/build artifacts
+          rsync -av . "$PLUGIN_SLUG/" \
+            --exclude="$PLUGIN_SLUG" \
+            --exclude=".git*" \
+            --exclude=".github" \
+            --exclude="node_modules" \
+            --exclude=".vscode" \
+            --exclude="dist" \
+            --exclude="build.ps1" \
+            --exclude="assets" \
+            --exclude="README.md" \
+            --exclude="*.zip" \
+            --exclude="*.tar.gz" \
+            --exclude="*.log" \
+            --exclude="Thumbs.db" \
+            --exclude=".DS_Store"
+
+          # Zip the staging directory
+          zip -r "$PACKAGE_NAME" "$PLUGIN_SLUG"
+          
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
 
       - name: Verify archive contents
