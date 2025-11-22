@@ -16,7 +16,7 @@ The **Sentifyd Avatar** plugin allows you to quickly integrate AI-powered 3D ava
 
 <p align="center">
 <div style="background-color: white;">
-  <img src="assets/icon-256x256.png" alt="Sentifyd Avatar Icon" width="256" style="background-color: white"></div>
+  <img src="assets/icon-256x256.svg" alt="Sentifyd Avatar Icon" width="256" style="background-color: white"></div>
 </p>
 
 Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully animated avatars capable of natural, voice-driven conversations. These interactive 3D agents combine:
@@ -33,6 +33,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 - **Secure Token Management**: Built-in REST endpoint for secure token generation
 - **Customizable Appearance**: Brand colors, logos, backgrounds, and border radius
 - **Flexible Deployment**: Auto-inject as toggler or embed using shortcode
+- **Access Control**: Option to restrict avatar visibility to logged-in users
 - **Localization Ready**: Supports 6+ languages for both admin panel and avatar UI
 - **Privacy-Focused**: Session-scoped data only, cleared when browser tab closes
 - **WordPress Standards**: Follows WordPress coding standards and best practices
@@ -106,6 +107,7 @@ Then upload the ZIP file via **WordPress Admin** → **Plugins** → **Add New**
 
 #### Avatar Attributes
 
+- **Require Authentication**: Restrict avatar access to logged-in users only
 - **Compact Mode**: Display avatar without header/footer
 - **Enable Captions**: Show captions on the avatar by default
 

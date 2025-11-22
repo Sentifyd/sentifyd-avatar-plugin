@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Sentifyd Avatar 1.0.0\n"
+"Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2025-11-12 15:08+0200\n"
-"PO-Revision-Date: 2025-11-12 15:35+0200\n"
+"POT-Creation-Date: 2025-11-12 18:03+0200\n"
+"PO-Revision-Date: 2025-11-22 23:35+0200\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -250,6 +250,19 @@ msgstr "Administra tu cuenta de Sentifyd y tus créditos de conversación."
 #: sentifyd-avatar.php:528
 msgid "Visit Sentifyd.io"
 msgstr "Visitar Sentifyd.io"
+
+msgid "Require Authentication"
+msgstr "Requerir autenticación"
+
+msgid "Only display the avatar to logged-in users."
+msgstr "Mostrar el avatar solo a los usuarios conectados."
+
+msgid ""
+"If enabled, guest visitors will not see the avatar and the API endpoint will "
+"reject unauthenticated requests."
+msgstr ""
+"Si se activa, los visitantes no verán el avatar y la API rechazará las "
+"solicitudes no autenticadas."
 
 #~ msgid "Radius Corner"
 #~ msgstr "Radio de esquina"

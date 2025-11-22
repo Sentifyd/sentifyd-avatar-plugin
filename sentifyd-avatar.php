@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://sentifyd.io
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -91,6 +91,7 @@ function sentifyd_default_settings() {
         'sentifyd_toggler'           => 'on',
         'sentifyd_compact'           => 'off',
         'sentifyd_enable_captions'   => 'on',
+        'sentifyd_require_auth'      => 'off',
     ];
 }
 
@@ -143,7 +144,7 @@ function sentifyd_sanitize_settings($input) {
     }
 
     // Checkboxes: explicit on/off
-    foreach (['sentifyd_toggler','sentifyd_compact','sentifyd_enable_captions'] as $checkbox) {
+    foreach (['sentifyd_toggler','sentifyd_compact','sentifyd_enable_captions', 'sentifyd_require_auth'] as $checkbox) {
         $sanitized[$checkbox] = (isset($input[$checkbox]) && $input[$checkbox] === 'on') ? 'on' : 'off';
     }
 
@@ -190,6 +191,14 @@ function sentifyd_settings_init() {
         'sentifyd_token_endpoint',
         __('Secure Token Endpoint', 'sentifyd-avatar'),
         'sentifyd_token_endpoint_render',
+        'sentifyd_options_group',
+        'sentifyd_general_section'
+    );
+
+    add_settings_field(
+        'sentifyd_require_auth',
+        __('Require Authentication', 'sentifyd-avatar'),
+        'sentifyd_require_auth_render',
         'sentifyd_options_group',
         'sentifyd_general_section'
     );
@@ -372,6 +381,15 @@ function sentifyd_token_endpoint_render() {
     <?php
 }
 
+function sentifyd_require_auth_render() {
+    ?>
+    <input type="hidden" name="sentifyd_settings[sentifyd_require_auth]" value="off">
+    <input id="sentifyd_require_auth" type="checkbox" name="sentifyd_settings[sentifyd_require_auth]" value="on" <?php checked(sentifyd_get_option('sentifyd_require_auth', 'off'), 'on'); ?> >
+    <label for="sentifyd_require_auth"><?php echo esc_html__('Only display the avatar to logged-in users.', 'sentifyd-avatar'); ?></label>
+    <p class="description"><?php echo esc_html__('If enabled, guest visitors will not see the avatar and the API endpoint will reject unauthenticated requests.', 'sentifyd-avatar'); ?></p>
+    <?php
+}
+
 function sentifyd_toggler_render() {
     ?>
     <input type="hidden" name="sentifyd_settings[sentifyd_toggler]" value="off">
@@ -545,6 +563,12 @@ function sentifyd_build_bot_tag() {
         return '';
     }
 
+    // Check if authentication is required
+    $require_auth = (isset($settings['sentifyd_require_auth']) && $settings['sentifyd_require_auth'] === 'on');
+    if ($require_auth && !is_user_logged_in()) {
+        return '';
+    }
+
     $attributes = [];
 
     if ($has_custom_bff) {
@@ -553,8 +577,14 @@ function sentifyd_build_bot_tag() {
         $attributes['avatar-id']      = $avatar_id;
     } else {
         // Use plugin's REST endpoint and include avatar_id in query string
+        $query_args = ['avatar_id' => $avatar_id];
+        // Include nonce for logged-in users to authorize token requests
+        if (is_user_logged_in()) {
+            $query_args['_wpnonce'] = wp_create_nonce('wp_rest');
+        }
+
         $attributes['token-endpoint'] = add_query_arg(
-            ['avatar_id' => $avatar_id],
+            $query_args,
             rest_url('sentifyd/v1/request_tokens')
         );
         $attributes['avatar-id']      = $avatar_id;
@@ -627,6 +657,11 @@ function sentifyd_build_bot_tag() {
  * Usage: [sentifyd_avatar]
  */
 function sentifyd_avatar_shortcode($atts) {
+    $tag = sentifyd_build_bot_tag();
+    if (empty($tag)) {
+        return '';
+    }
+
     // Ensure the script is present; element can be inline without auto-injection
     wp_enqueue_script(
         'sentifyd-main',
@@ -639,8 +674,7 @@ function sentifyd_avatar_shortcode($atts) {
         ]
     );
 
-    $tag = sentifyd_build_bot_tag();
-    return $tag ? $tag : '';
+    return $tag;
 }
 add_shortcode('sentifyd_avatar', 'sentifyd_avatar_shortcode');
 
@@ -650,6 +684,7 @@ add_shortcode('sentifyd_avatar', 'sentifyd_avatar_shortcode');
 function sentifyd_deploy_bot() {
     // Auto-inject only when toggler is enabled (default). If disabled, rely on shortcode placement.
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+
     $toggler_on = (!isset($settings['sentifyd_toggler']) || $settings['sentifyd_toggler'] === 'on');
     if (!$toggler_on) {
         return;
@@ -724,7 +759,22 @@ add_action('rest_api_init', function () {
     register_rest_route('sentifyd/v1', '/request_tokens', [
         'methods'             => 'GET', // GET method to match frontend expectations
         'callback'            => 'sentifyd_rest_request_tokens',
-        'permission_callback' => '__return_true', // public; returns short-lived tokens only
+        'permission_callback' => function () {
+            // Check the plugin settings
+            $settings = (array) get_option('sentifyd_settings', []);
+            $require_auth = (isset($settings['sentifyd_require_auth']) && $settings['sentifyd_require_auth'] === 'on');
+
+            // If the site owner enabled "Require Authentication", check if user is logged in.
+            if ($require_auth) {
+                return is_user_logged_in();
+            }
+
+            // Otherwise, it is a public endpoint for site visitors.
+            // It provides short-lived session tokens for the frontend chat widget,
+            // allowing unauthenticated site visitors to interact with the avatar.
+            // Abuse is mitigated via IP-based rate limiting within the callback.
+            return true;
+        },
     ]);
 });
 

@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Sentifyd Avatar 1.0.0\n"
+"Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2025-11-12 15:08+0200\n"
-"PO-Revision-Date: 2025-11-13 10:16+0200\n"
+"POT-Creation-Date: 2025-11-12 18:03+0200\n"
+"PO-Revision-Date: 2025-11-22 23:36+0200\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -236,6 +236,17 @@ msgstr "管理您的 Sentifyd 账户和会话额度。"
 #: sentifyd-avatar.php:528
 msgid "Visit Sentifyd.io"
 msgstr "访问 Sentifyd.io"
+
+msgid "Require Authentication"
+msgstr "需要身份验证"
+
+msgid "Only display the avatar to logged-in users."
+msgstr "仅向已登录用户显示头像。"
+
+msgid ""
+"If enabled, guest visitors will not see the avatar and the API endpoint will "
+"reject unauthenticated requests."
+msgstr "启用后，访客将无法看到头像，API 端点将拒绝未经身份验证的请求。"
 
 #~ msgid "Radius Corner"
 #~ msgstr "圆角"

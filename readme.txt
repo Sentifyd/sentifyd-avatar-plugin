@@ -3,7 +3,7 @@ Contributors: sentifyd
 Tags: sentifyd, AI, avatars, agents, 3d avatar
 Requires at least: 6.3
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,7 @@ Easily install Sentifyd.io 3D AI avatars on your WordPress site.
 
 This plugin allows you to quickly and easily add a Sentifyd AI-powered 3D avatar to your WordPress website. Simply install the plugin, enter your avatar API key and Avatar ID on the settings page, and the Sentifyd avatar web component will be installed on your site.
 
-The admin page allows you to configure your avatar API Key, Avatar ID, branding, and other important attributes for the avatar. However, you need to sign up to sentifyd.io to create your avatar and train it. 
+The admin page allows you to configure your avatar API Key, Avatar ID, branding, and other important attributes for the avatar. You can also restrict the avatar to logged-in users only. However, you need to sign up to sentifyd.io to create your avatar and train it. 
 
 Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully animated avatars capable of natural, voice-driven conversations. These interactive 3D agents go beyond traditional chatbots by combining Retrieval-Augmented Generation (RAG), dynamic motion, and customizable tool integration.
 
@@ -51,7 +51,7 @@ The installation of the Sentifyd Avatar plugin is straightforward:
 2.  Add the `sentifyd-avatar` plugin from the WordPress Plugins Directory.
 3.  Activate the plugin through the 'Plugins' menu in WordPress, and go to the new 'Sentifyd Avatar' menu in your WordPress admin sidebar.
 4.  Enter your "API Key" and your "Avatar ID" (both required for simple API Key deployment). Alternatively, provide your "Secure Token Endpoint" and your "Avatar ID" if you want more control of the API key's security. Check the documentation at docs.sentifyd.io.
-5.  By default, the avatar will be installed on the bottom right corner like a site chatbot in all pages. If you want to embed the avatar in a specific location in you site, uncheck the "Enable Toggler" option, and use the short code [avatar_avatar] to add the avatar in your site. 
+5.  By default, the avatar will be installed on the bottom right corner like a site chatbot in all pages. If you want to embed the avatar in a specific location in your site, uncheck the "Enable Toggler" option, and use the short code [avatar_avatar] to add the avatar in your site. 
 6.  Optionally, set your branding attributes such as Brand Name, Brand Logo URL, etc.
 7.  You can also optionally change the installed avatar widget theme.
 8.  Click "Save Settings". The avatar will now appear on your site.
@@ -81,6 +81,9 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 
 
 == Changelog ==
+
+= 1.1.0 =
+* Added "Require Authentication" setting to restrict avatar access to logged-in users only.
 
 = 1.0.0 =
 * Initial release of the plugin.
