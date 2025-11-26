@@ -734,7 +734,7 @@ function sentifyd_script_loader_tag($tag, $handle, $src) {
 add_filter('script_loader_tag', 'sentifyd_script_loader_tag', 10, 3);
 
 // Apply user-defined colors on the frontend if provided
-function sentifyd_apply_custom_css() {
+function sentifyd_enqueue_custom_css() {
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
     $map = [
         'sentifyd_color_primary'           => '--primary-color',
@@ -750,9 +750,13 @@ function sentifyd_apply_custom_css() {
         }
     }
     if (!$lines) return;
-    echo '<style id="sentifyd-avatar-user-vars">sentifyd-bot {' . esc_html(implode(' ', $lines)) . '}</style>' . "\n";
+    
+    // Register a dummy inline style handle and add our custom CSS variables
+    wp_register_style('sentifyd-avatar-user-vars', false);
+    wp_enqueue_style('sentifyd-avatar-user-vars');
+    wp_add_inline_style('sentifyd-avatar-user-vars', 'sentifyd-bot {' . implode(' ', $lines) . '}');
 }
-add_action('wp_head', 'sentifyd_apply_custom_css');
+add_action('wp_enqueue_scripts', 'sentifyd_enqueue_custom_css');
 
 // Built-in REST endpoint to issue temporary tokens
 add_action('rest_api_init', function () {
