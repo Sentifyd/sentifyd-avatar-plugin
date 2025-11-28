@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:       Sentifyd Avatar
- * Plugin URI:        https://sentifyd.io
+ * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
  * Version:           1.1.0
  * Requires at least: 6.3
