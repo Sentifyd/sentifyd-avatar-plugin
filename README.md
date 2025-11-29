@@ -180,7 +180,7 @@ When the avatar widget initializes, avatar initialization data is received from 
 **What it does:** Provides speech-to-text (STT) functionality, converting user voice input into text that the avatar can process. The avatar widget connects directly to Azure Speech Services from the user's browser.
 
 **Data sent and received:**
-When a user clicks the microphone button and speaks to the avatar. user's voice audio is sent directly from browser to Azure Speech Services. Short-lived speech authentication tokens (obtained from Sentifyd backend, typically expire within minutes).
+When a user clicks the microphone button and speaks to the avatar, user's voice audio is sent directly from browser to Azure Speech Services. Short-lived speech authentication tokens (obtained from Sentifyd backend, typically expire within minutes).
 
 **Service provider:** Microsoft Corporation  
 [Terms of Service](https://azure.microsoft.com/en-us/support/legal/) | [Privacy Policy](https://privacy.microsoft.com/en-us/privacystatement) | [Azure Speech Docs](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/overview)
