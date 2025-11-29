@@ -114,7 +114,6 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 == Changelog ==
 
 = 1.2.0 =
-* Added debugging helper function `write_log` for easier development troubleshooting.
 
 = 1.1.0 =
 * Added "Require Authentication" setting to restrict avatar access to logged-in users only.
