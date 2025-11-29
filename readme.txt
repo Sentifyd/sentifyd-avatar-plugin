@@ -3,7 +3,7 @@ Contributors: sentifyd
 Tags: sentifyd, AI, avatars, agents, 3d avatar
 Requires at least: 6.3
 Tested up to: 6.8
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -33,6 +33,37 @@ These agents can be easily embedded into your website or application, offering u
 
 * [Sign up and get up to 500 conversation minutes (Free Trial)](https://sentifyd.io)
 * [Buy Conversation Minutes](https://sentifyd.io/pricing)
+
+== External Services ==
+
+This plugin relies on external third-party services provided by Sentifyd to function. By using this plugin, you acknowledge and agree to the use of these services.
+
+= Sentifyd Frontend Service (frontend.sentifyd.io) =
+
+**What it does:** Provides the JavaScript web component library that powers the 3D AI avatar interface displayed on your website.
+
+**Data sent and received:** The JavaScript file is loaded from `https://frontend.sentifyd.io/sentifyd-bot/main.js` whenever a page with the avatar is viewed.
+
+**Service provider:** Sentifyd.io  
+[Terms of Service](https://sentifyd.io/terms) | [Privacy Policy](https://sentifyd.io/privacy)
+
+= Sentifyd Backend Service (serve.sentifyd.io) =
+
+**What it does:** Handles avatar authentication, conversation processing, natural language understanding, voice synthesis, and AI-powered responses.
+
+**Data sent and received:** When the avatar widget initializes, avatar initialization data is received from the server. During each user interaction with the avatar, users input is sent to the server, and AI responses are received. Conversation data is processed in real-time. Session tokens are short-lived (typically expire within 1 hour). Conversation logs are retained for a short period (1 hour) to easily resume conversations.
+
+**Service provider:** Sentifyd.io  
+[Terms of Service](https://sentifyd.io/terms) | [Privacy Policy](https://sentifyd.io/privacy)
+
+= Azure Speech Services (Microsoft Azure) =
+
+**What it does:** Provides speech-to-text (STT) functionality, converting user voice input into text that the avatar can process. The avatar widget connects directly to Azure Speech Services from the user's browser.
+
+**Data sent and received:** When a user clicks the microphone button and speaks to the avatar, user's voice audio is sent directly from browser to Azure Speech Services. Short-lived speech authentication tokens (obtained from Sentifyd backend, typically expire within minutes).
+
+**Service provider:** Microsoft Corporation  
+[Terms of Service](https://azure.microsoft.com/en-us/support/legal/) | [Privacy Policy](https://privacy.microsoft.com/en-us/privacystatement) | [Azure Speech Docs](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/overview)
 
 == Localization ==
 
@@ -81,6 +112,11 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 
 
 == Changelog ==
+
+= 1.2.0 =
+* Added documentation of used external services in readme.txt.
+* Refactored code to use wp_enqueue functions (Technical Debt).
+* Updated the plugin URI in the header to the public Github repository.
 
 = 1.1.0 =
 * Added "Require Authentication" setting to restrict avatar access to logged-in users only.

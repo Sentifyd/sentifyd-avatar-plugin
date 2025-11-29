@@ -1,7 +1,7 @@
 # Build script for Sentifyd Avatar Plugin
 
 $pluginSlug = "sentifyd-avatar"
-$version = "1.1.0"
+$version = "1.2.0"
 $distDir = Join-Path $PSScriptRoot "dist"
 $zipName = "$pluginSlug-v$version.zip"
 $zipPath = Join-Path $distDir $zipName
