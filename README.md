@@ -160,7 +160,7 @@ This plugin relies on external third-party services provided by Sentifyd to func
 
 **What it does:** Provides the JavaScript web component library that powers the 3D AI avatar interface displayed on your website.
 
-**Data sent and recieved:** The JavaScript file is loaded from `https://frontend.sentifyd.io/sentifyd-bot/main.js` whenever a page with the avatar is viewed.
+**Data sent and received:** The JavaScript file is loaded from `https://frontend.sentifyd.io/sentifyd-bot/main.js` whenever a page with the avatar is viewed.
 
 **Service provider:** Sentifyd.io  
 [Terms of Service](https://sentifyd.io/terms) | [Privacy Policy](https://sentifyd.io/privacy)
