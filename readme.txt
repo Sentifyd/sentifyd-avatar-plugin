@@ -114,6 +114,9 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 == Changelog ==
 
 = 1.2.0 =
+* Added documentation of used external services in readme.txt.
+* Refactored code to use wp_enqueue functions (Technical Debt).
+* Updated the plugin URI in the header to the public Github repository.
 
 = 1.1.0 =
 * Added "Require Authentication" setting to restrict avatar access to logged-in users only.
