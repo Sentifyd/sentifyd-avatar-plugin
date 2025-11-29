@@ -170,7 +170,7 @@ This plugin relies on external third-party services provided by Sentifyd to func
 **What it does:** Handles avatar authentication, conversation processing, natural language understanding, voice synthesis, and AI-powered responses.
 
 **Data sent and received:**
-When the avatar widget initializes avatar initialization data is received from the server. During each user interaction with the avatar, users input is sent to the server, and AI responses are recieved. Conversation data is processed in real-time. Session tokens are short-lived (typically expire within 1 hour). Conversation logs are retained for a short period (1 hour) to easily resume conversations.
+When the avatar widget initializes, avatar initialization data is received from the server. During each user interaction with the avatar, users input is sent to the server, and AI responses are recieved. Conversation data is processed in real-time. Session tokens are short-lived (typically expire within 1 hour). Conversation logs are retained for a short period (1 hour) to easily resume conversations.
 
 **Service provider:** Sentifyd.io  
 [Terms of Service](https://sentifyd.io/terms) | [Privacy Policy](https://sentifyd.io/privacy)
