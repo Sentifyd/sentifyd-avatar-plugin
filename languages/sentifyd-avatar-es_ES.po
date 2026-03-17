@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2025-11-12 18:03+0200\n"
-"PO-Revision-Date: 2025-11-22 23:35+0200\n"
+"POT-Creation-Date: 2026-03-17 20:18+0200\n"
+"PO-Revision-Date: 2026-03-17 21:01+0200\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Domain: sentifyd-avatar\n"
 "X-Generator: Poedit 3.8\n"
 
-#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:339
+#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:353
 msgid "Sentifyd Avatar"
 msgstr "Sentifyd Avatar"
 
@@ -22,94 +22,102 @@ msgstr "Sentifyd Avatar"
 msgid "Settings"
 msgstr "Ajustes"
 
-#: sentifyd-avatar.php:171
+#: sentifyd-avatar.php:172
 msgid "Avatar Settings"
 msgstr "Configuración del avatar"
 
-#: sentifyd-avatar.php:178
+#: sentifyd-avatar.php:179
 msgid "Enter your avatar API Key"
 msgstr "Ingrese su avatar API Clave"
 
-#: sentifyd-avatar.php:186
+#: sentifyd-avatar.php:187
 msgid "Avatar ID"
 msgstr "ID del avatar"
 
-#: sentifyd-avatar.php:194
+#: sentifyd-avatar.php:195
+msgid "Voice mode"
+msgstr "Modo de voz"
+
+#: sentifyd-avatar.php:203
 msgid "Secure Token Endpoint"
 msgstr "Punto de acceso de token seguro"
 
-#: sentifyd-avatar.php:202
+#: sentifyd-avatar.php:211
+msgid "Require Authentication"
+msgstr "Requerir autenticación"
+
+#: sentifyd-avatar.php:219
 msgid "Other Avatar Attributes"
 msgstr "Otros atributos del avatar"
 
-#: sentifyd-avatar.php:209
+#: sentifyd-avatar.php:226
 msgid "Enable Toggler"
 msgstr "Activar conmutador"
 
-#: sentifyd-avatar.php:217
+#: sentifyd-avatar.php:234
 msgid "Compact Mode"
 msgstr "Modo compacto"
 
-#: sentifyd-avatar.php:225
+#: sentifyd-avatar.php:242
 msgid "Enable Captions"
 msgstr "Activar subtítulos"
 
-#: sentifyd-avatar.php:233
+#: sentifyd-avatar.php:250
 msgid "Branding Attributes"
 msgstr "Atributos de marca"
 
-#: sentifyd-avatar.php:240
+#: sentifyd-avatar.php:257
 msgid "Brand Name"
 msgstr "Nombre de la marca"
 
-#: sentifyd-avatar.php:248
+#: sentifyd-avatar.php:265
 msgid "Brand Logo URL"
 msgstr "URL del logotipo de la marca"
 
-#: sentifyd-avatar.php:256
+#: sentifyd-avatar.php:273
 msgid "Terms Link"
 msgstr "Enlace a los términos"
 
-#: sentifyd-avatar.php:264
+#: sentifyd-avatar.php:281
 msgid "Privacy Link"
 msgstr "Enlace a la privacidad"
 
-#: sentifyd-avatar.php:275
+#: sentifyd-avatar.php:289
 msgid "Avatar Widget Theme"
 msgstr "Tema del widget de avatar"
 
-#: sentifyd-avatar.php:277
+#: sentifyd-avatar.php:291
 msgid ""
 "Customize the avatar widget theme. Leave blank to use built-in defaults."
 msgstr ""
 "Personalizar el tema del widget de avatar. Dejar en blanco para utilizar los "
 "valores predeterminados incorporados."
 
-#: sentifyd-avatar.php:284
+#: sentifyd-avatar.php:298
 msgid "Avatar Background"
 msgstr "Fondo del avatar"
 
-#: sentifyd-avatar.php:292
+#: sentifyd-avatar.php:306
 msgid "Curved Corner Radius"
 msgstr "Radio de la esquina curvada"
 
-#: sentifyd-avatar.php:300
+#: sentifyd-avatar.php:314
 msgid "Primary color"
 msgstr "Color primario"
 
-#: sentifyd-avatar.php:307
+#: sentifyd-avatar.php:321
 msgid "Secondary color"
 msgstr "Color secundario"
 
-#: sentifyd-avatar.php:314
-msgid "Text color primary on background"
-msgstr "Color de texto primario en el fondo"
+#: sentifyd-avatar.php:328
+msgid "Text color on primary background"
+msgstr "Color del texto sobre fondo principal"
 
-#: sentifyd-avatar.php:321
+#: sentifyd-avatar.php:335
 msgid "Text color on secondary background"
 msgstr "Color del texto en el fondo secundario"
 
-#: sentifyd-avatar.php:334
+#: sentifyd-avatar.php:348
 msgid ""
 "This plugin embeds the Sentifyd avatar web component which stores session-"
 "scoped data in the browser (sessionStorage) to maintain UI state and "
@@ -126,15 +134,15 @@ msgstr ""
 "borran cuando se cierra la pestaña/ventana. El widget no almacena datos en "
 "cookies ni en almacenamiento local."
 
-#: sentifyd-avatar.php:359
+#: sentifyd-avatar.php:399
 msgid "Show API Key"
 msgstr "Mostrar clave API"
 
-#: sentifyd-avatar.php:359
+#: sentifyd-avatar.php:399
 msgid "Hide API Key"
 msgstr "Ocultar clave API"
 
-#: sentifyd-avatar.php:363
+#: sentifyd-avatar.php:403
 msgid ""
 "Stored server-side only and used to mint short-lived tokens; never exposed "
 "in the browser DOM. Required unless you provide a custom token endpoint."
@@ -143,16 +151,41 @@ msgstr ""
 "corta duración; nunca expuesta en el DOM del navegador. Requerida a menos "
 "que proporcione un punto de acceso de token personalizado."
 
-#: sentifyd-avatar.php:370
+#: sentifyd-avatar.php:410
 msgid "Required"
 msgstr "Requerido"
 
-#: sentifyd-avatar.php:370
+#: sentifyd-avatar.php:410
 msgid "Find your Avatar ID in the avatar page in Sentifyd platform."
 msgstr ""
 "Encuentra tu ID de avatar en la página del avatar en la plataforma Sentifyd."
 
-#: sentifyd-avatar.php:377
+#: sentifyd-avatar.php:420
+msgid "Standard"
+msgstr "Estándar"
+
+#: sentifyd-avatar.php:425
+msgid "Real-time"
+msgstr "Tiempo real"
+
+#: sentifyd-avatar.php:428
+msgid ""
+"Standard is used for avatars with standard synthesized voices. Real-time is "
+"used for speech-to-speech avatars with realtime voice mode."
+msgstr ""
+"El modo Estándar se utiliza para avatares con voces sintetizadas estándar. "
+"El modo Tiempo real se utiliza para avatares de voz a voz con modo de voz en "
+"tiempo real."
+
+#: sentifyd-avatar.php:429
+msgid ""
+"If you choose Real-time, the selected avatar in Sentifyd platform must be "
+"configured for realtime voice mode."
+msgstr ""
+"Si eliges Tiempo real, el avatar seleccionado en la plataforma Sentifyd debe "
+"estar configurado para el modo de voz en tiempo real."
+
+#: sentifyd-avatar.php:436
 msgid ""
 "Optional. If provided, the avatar will call your secure token endpoint to "
 "obtain short-lived session tokens. If omitted, this plugin uses its built-in "
@@ -164,12 +197,24 @@ msgstr ""
 "plugin utiliza su punto de acceso REST de WordPress integrado para generar "
 "tokens utilizando su clave API almacenada (que nunca se expone al navegador)."
 
-#: sentifyd-avatar.php:385
+#: sentifyd-avatar.php:444
+msgid "Only display the avatar to logged-in users."
+msgstr "Mostrar el avatar solo a los usuarios conectados."
+
+#: sentifyd-avatar.php:445
+msgid ""
+"If enabled, guest visitors will not see the avatar and the API endpoint will "
+"reject unauthenticated requests."
+msgstr ""
+"Si se activa, los visitantes no verán el avatar y la API rechazará las "
+"solicitudes no autenticadas."
+
+#: sentifyd-avatar.php:453
 msgid "Display the avatar as a minimizable toggler (bottom-right style)."
 msgstr ""
 "Mostrar el avatar como un conmutador minimizable (estilo inferior derecho)."
 
-#: sentifyd-avatar.php:387
+#: sentifyd-avatar.php:455
 msgid ""
 "When enabled (default), the plugin auto-injects the toggler on each page. "
 "When disabled, the avatar will not auto-inject;"
@@ -178,43 +223,43 @@ msgstr ""
 "conmutador en cada página. Cuando está deshabilitado, el avatar no se "
 "inyecta automáticamente;"
 
-#: sentifyd-avatar.php:392
+#: sentifyd-avatar.php:459
 #, php-format
 msgid "place it where you want using the shortcode %s."
 msgstr "colócalo donde quieras utilizando el shortcode %s."
 
-#: sentifyd-avatar.php:405
+#: sentifyd-avatar.php:472
 msgid "Displays the avatar without the header or footer."
 msgstr "Muestra el avatar sin encabezado ni pie de página."
 
-#: sentifyd-avatar.php:413
+#: sentifyd-avatar.php:480
 msgid "Show captions on the avatar by default."
 msgstr "Mostrar subtítulos en el avatar por defecto."
 
-#: sentifyd-avatar.php:420
+#: sentifyd-avatar.php:487
 msgid "Full URL to your Terms of Service."
 msgstr "URL completa de tus Términos de Servicio."
 
-#: sentifyd-avatar.php:427
+#: sentifyd-avatar.php:494
 msgid "Full URL to your Privacy Policy."
 msgstr "URL completa de tu Política de Privacidad."
 
-#: sentifyd-avatar.php:434
+#: sentifyd-avatar.php:501
 msgid ""
 "The name of your brand or institution, used in the exported transcripts."
 msgstr ""
 "El nombre de tu marca o institución, utilizado en las transcripciones "
 "exportadas."
 
-#: sentifyd-avatar.php:441
+#: sentifyd-avatar.php:508
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "La URL del logotipo que se muestra en el encabezado del avatar."
 
-#: sentifyd-avatar.php:447
+#: sentifyd-avatar.php:514
 msgid "#ffffff or transparent"
 msgstr "#ffffff o transparente"
 
-#: sentifyd-avatar.php:448
+#: sentifyd-avatar.php:515
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -222,11 +267,11 @@ msgstr ""
 "Fondo detrás del avatar. Acepta un valor de color CSS (p. ej., #ffffff, "
 "rgb(0 0 0 / 0.5) o linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
 
-#: sentifyd-avatar.php:454
+#: sentifyd-avatar.php:521
 msgid "12px, 1rem, 50%"
 msgstr "12px, 1rem, 50%"
 
-#: sentifyd-avatar.php:455
+#: sentifyd-avatar.php:522
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -235,34 +280,21 @@ msgstr ""
 "CSS (por ejemplo, 12px, 1rem, 50%). Establecer a 0 para las esquinas "
 "cuadradas."
 
-#: sentifyd-avatar.php:518
+#: sentifyd-avatar.php:585
 msgid "Save Settings"
 msgstr "Guardar ajustes"
 
-#: sentifyd-avatar.php:524
+#: sentifyd-avatar.php:591
 msgid "Sentifyd Account Management"
 msgstr "Gestión de cuenta de Sentifyd"
 
-#: sentifyd-avatar.php:525
+#: sentifyd-avatar.php:592
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "Administra tu cuenta de Sentifyd y tus créditos de conversación."
 
-#: sentifyd-avatar.php:528
+#: sentifyd-avatar.php:595
 msgid "Visit Sentifyd.io"
 msgstr "Visitar Sentifyd.io"
-
-msgid "Require Authentication"
-msgstr "Requerir autenticación"
-
-msgid "Only display the avatar to logged-in users."
-msgstr "Mostrar el avatar solo a los usuarios conectados."
-
-msgid ""
-"If enabled, guest visitors will not see the avatar and the API endpoint will "
-"reject unauthenticated requests."
-msgstr ""
-"Si se activa, los visitantes no verán el avatar y la API rechazará las "
-"solicitudes no autenticadas."
 
 #~ msgid "Radius Corner"
 #~ msgstr "Radio de esquina"

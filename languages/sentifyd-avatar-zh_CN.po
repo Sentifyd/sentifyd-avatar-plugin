@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2025-11-12 18:03+0200\n"
-"PO-Revision-Date: 2025-11-22 23:36+0200\n"
+"POT-Creation-Date: 2026-03-17 20:18+0200\n"
+"PO-Revision-Date: 2026-03-17 20:54+0200\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Domain: sentifyd-avatar\n"
 "X-Generator: Poedit 3.8\n"
 
-#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:339
+#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:353
 msgid "Sentifyd Avatar"
 msgstr "Sentifyd 头像"
 
@@ -22,92 +22,100 @@ msgstr "Sentifyd 头像"
 msgid "Settings"
 msgstr "设置"
 
-#: sentifyd-avatar.php:171
+#: sentifyd-avatar.php:172
 msgid "Avatar Settings"
 msgstr "头像设置"
 
-#: sentifyd-avatar.php:178
+#: sentifyd-avatar.php:179
 msgid "Enter your avatar API Key"
 msgstr "输入您的头像 API 密钥"
 
-#: sentifyd-avatar.php:186
+#: sentifyd-avatar.php:187
 msgid "Avatar ID"
 msgstr "头像 ID"
 
-#: sentifyd-avatar.php:194
+#: sentifyd-avatar.php:195
+msgid "Voice mode"
+msgstr "语音方式"
+
+#: sentifyd-avatar.php:203
 msgid "Secure Token Endpoint"
 msgstr "安全令牌端点"
 
-#: sentifyd-avatar.php:202
+#: sentifyd-avatar.php:211
+msgid "Require Authentication"
+msgstr "需要身份验证"
+
+#: sentifyd-avatar.php:219
 msgid "Other Avatar Attributes"
 msgstr "其他头像属性"
 
-#: sentifyd-avatar.php:209
+#: sentifyd-avatar.php:226
 msgid "Enable Toggler"
 msgstr "启用切换器"
 
-#: sentifyd-avatar.php:217
+#: sentifyd-avatar.php:234
 msgid "Compact Mode"
 msgstr "紧凑模式"
 
-#: sentifyd-avatar.php:225
+#: sentifyd-avatar.php:242
 msgid "Enable Captions"
 msgstr "启用字幕"
 
-#: sentifyd-avatar.php:233
+#: sentifyd-avatar.php:250
 msgid "Branding Attributes"
 msgstr "品牌属性"
 
-#: sentifyd-avatar.php:240
+#: sentifyd-avatar.php:257
 msgid "Brand Name"
 msgstr "品牌名称"
 
-#: sentifyd-avatar.php:248
+#: sentifyd-avatar.php:265
 msgid "Brand Logo URL"
 msgstr "品牌标志 URL"
 
-#: sentifyd-avatar.php:256
+#: sentifyd-avatar.php:273
 msgid "Terms Link"
 msgstr "服务条款链接"
 
-#: sentifyd-avatar.php:264
+#: sentifyd-avatar.php:281
 msgid "Privacy Link"
 msgstr "隐私政策链接"
 
-#: sentifyd-avatar.php:275
+#: sentifyd-avatar.php:289
 msgid "Avatar Widget Theme"
 msgstr "阿凡达小部件主题"
 
-#: sentifyd-avatar.php:277
+#: sentifyd-avatar.php:291
 msgid ""
 "Customize the avatar widget theme. Leave blank to use built-in defaults."
 msgstr "自定义头像小部件主题。留空以使用内置默认值。"
 
-#: sentifyd-avatar.php:284
+#: sentifyd-avatar.php:298
 msgid "Avatar Background"
 msgstr "头像背景"
 
-#: sentifyd-avatar.php:292
+#: sentifyd-avatar.php:306
 msgid "Curved Corner Radius"
 msgstr "弯曲角半径"
 
-#: sentifyd-avatar.php:300
+#: sentifyd-avatar.php:314
 msgid "Primary color"
 msgstr "主色"
 
-#: sentifyd-avatar.php:307
+#: sentifyd-avatar.php:321
 msgid "Secondary color"
 msgstr "副色"
 
-#: sentifyd-avatar.php:314
-msgid "Text color primary on background"
-msgstr "背景上的文本颜色为原色"
+#: sentifyd-avatar.php:328
+msgid "Text color on primary background"
+msgstr "主背景上的文字颜色"
 
-#: sentifyd-avatar.php:321
+#: sentifyd-avatar.php:335
 msgid "Text color on secondary background"
 msgstr "次要背景上的文本颜色"
 
-#: sentifyd-avatar.php:334
+#: sentifyd-avatar.php:348
 msgid ""
 "This plugin embeds the Sentifyd avatar web component which stores session-"
 "scoped data in the browser (sessionStorage) to maintain UI state and "
@@ -121,15 +129,15 @@ msgstr ""
 "数据以及会话转录。关闭标签/窗口时数据清除。组件不在 Cookie 或本地存储中保存任"
 "何数据。"
 
-#: sentifyd-avatar.php:359
+#: sentifyd-avatar.php:399
 msgid "Show API Key"
 msgstr "显示 API 密钥"
 
-#: sentifyd-avatar.php:359
+#: sentifyd-avatar.php:399
 msgid "Hide API Key"
 msgstr "隐藏 API 密钥"
 
-#: sentifyd-avatar.php:363
+#: sentifyd-avatar.php:403
 msgid ""
 "Stored server-side only and used to mint short-lived tokens; never exposed "
 "in the browser DOM. Required unless you provide a custom token endpoint."
@@ -137,15 +145,36 @@ msgstr ""
 "仅储存在服务器端，用于生成短期令牌；绝不会在浏览器 DOM 中公开。除非您提供自定"
 "义令牌端点，否则此为必填项。"
 
-#: sentifyd-avatar.php:370
+#: sentifyd-avatar.php:410
 msgid "Required"
 msgstr "必填"
 
-#: sentifyd-avatar.php:370
+#: sentifyd-avatar.php:410
 msgid "Find your Avatar ID in the avatar page in Sentifyd platform."
 msgstr "在 Sentifyd 平台的头像页面中查找您的头像 ID。"
 
-#: sentifyd-avatar.php:377
+#: sentifyd-avatar.php:420
+msgid "Standard"
+msgstr "标准"
+
+#: sentifyd-avatar.php:425
+msgid "Real-time"
+msgstr "实时"
+
+#: sentifyd-avatar.php:428
+msgid ""
+"Standard is used for avatars with standard synthesized voices. Real-time is "
+"used for speech-to-speech avatars with realtime voice mode."
+msgstr ""
+"标准用于具有标准合成声音的化身。实时用于具有实时语音模式的语音对语音头像。"
+
+#: sentifyd-avatar.php:429
+msgid ""
+"If you choose Real-time, the selected avatar in Sentifyd platform must be "
+"configured for realtime voice mode."
+msgstr "如果您选择实时,则 Sentifyd 平台中选定的头像必须配置为实时语音模式。"
+
+#: sentifyd-avatar.php:436
 msgid ""
 "Optional. If provided, the avatar will call your secure token endpoint to "
 "obtain short-lived session tokens. If omitted, this plugin uses its built-in "
@@ -156,52 +185,62 @@ msgstr ""
 "件将使用其内置的 WordPress REST 端点，通过您存储的 API 密钥（绝不会在浏览器中"
 "公开）来生成令牌。"
 
-#: sentifyd-avatar.php:385
+#: sentifyd-avatar.php:444
+msgid "Only display the avatar to logged-in users."
+msgstr "仅向已登录用户显示头像。"
+
+#: sentifyd-avatar.php:445
+msgid ""
+"If enabled, guest visitors will not see the avatar and the API endpoint will "
+"reject unauthenticated requests."
+msgstr "启用后，访客将无法看到头像，API 端点将拒绝未经身份验证的请求。"
+
+#: sentifyd-avatar.php:453
 msgid "Display the avatar as a minimizable toggler (bottom-right style)."
 msgstr "将头像显示为可最小化的切换器（右下角样式）。"
 
-#: sentifyd-avatar.php:387
+#: sentifyd-avatar.php:455
 msgid ""
 "When enabled (default), the plugin auto-injects the toggler on each page. "
 "When disabled, the avatar will not auto-inject;"
 msgstr ""
 "启用时（默认），插件会在每个页面自动注入切换器。禁用时，头像不会自动注入；"
 
-#: sentifyd-avatar.php:392
+#: sentifyd-avatar.php:459
 #, php-format
 msgid "place it where you want using the shortcode %s."
 msgstr "使用短代码 %s 将其放置在您想要的位置。"
 
-#: sentifyd-avatar.php:405
+#: sentifyd-avatar.php:472
 msgid "Displays the avatar without the header or footer."
 msgstr "显示没有页眉或页脚的头像。"
 
-#: sentifyd-avatar.php:413
+#: sentifyd-avatar.php:480
 msgid "Show captions on the avatar by default."
 msgstr "默认显示头像字幕。"
 
-#: sentifyd-avatar.php:420
+#: sentifyd-avatar.php:487
 msgid "Full URL to your Terms of Service."
 msgstr "服务条款的完整 URL。"
 
-#: sentifyd-avatar.php:427
+#: sentifyd-avatar.php:494
 msgid "Full URL to your Privacy Policy."
 msgstr "隐私政策的完整 URL。"
 
-#: sentifyd-avatar.php:434
+#: sentifyd-avatar.php:501
 msgid ""
 "The name of your brand or institution, used in the exported transcripts."
 msgstr "您品牌或机构的名称，将用于导出的对话记录。"
 
-#: sentifyd-avatar.php:441
+#: sentifyd-avatar.php:508
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "显示在头像页眉中的徽标图片 URL。"
 
-#: sentifyd-avatar.php:447
+#: sentifyd-avatar.php:514
 msgid "#ffffff or transparent"
 msgstr "#ffffff 或 transparent"
 
-#: sentifyd-avatar.php:448
+#: sentifyd-avatar.php:515
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -209,11 +248,11 @@ msgstr ""
 "头像背景。接受 CSS 颜色值（例如 #ffffff、rgb(0 0 0 / 0.5) 或 linear-"
 "gradient(135deg, #4f46e5 0%, #06b6d4 100%)）。"
 
-#: sentifyd-avatar.php:454
+#: sentifyd-avatar.php:521
 msgid "12px, 1rem, 50%"
 msgstr "12px, 1rem, 50%"
 
-#: sentifyd-avatar.php:455
+#: sentifyd-avatar.php:522
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -221,32 +260,21 @@ msgstr ""
 "头像小部件的弯曲角半径。接受 CSS 长度值（例如,12px、1rem、50%)。将方角设置为 "
 "0。"
 
-#: sentifyd-avatar.php:518
+#: sentifyd-avatar.php:585
 msgid "Save Settings"
 msgstr "保存设置"
 
-#: sentifyd-avatar.php:524
+#: sentifyd-avatar.php:591
 msgid "Sentifyd Account Management"
 msgstr "Sentifyd 账户管理"
 
-#: sentifyd-avatar.php:525
+#: sentifyd-avatar.php:592
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "管理您的 Sentifyd 账户和会话额度。"
 
-#: sentifyd-avatar.php:528
+#: sentifyd-avatar.php:595
 msgid "Visit Sentifyd.io"
 msgstr "访问 Sentifyd.io"
-
-msgid "Require Authentication"
-msgstr "需要身份验证"
-
-msgid "Only display the avatar to logged-in users."
-msgstr "仅向已登录用户显示头像。"
-
-msgid ""
-"If enabled, guest visitors will not see the avatar and the API endpoint will "
-"reject unauthenticated requests."
-msgstr "启用后，访客将无法看到头像，API 端点将拒绝未经身份验证的请求。"
 
 #~ msgid "Radius Corner"
 #~ msgstr "圆角"

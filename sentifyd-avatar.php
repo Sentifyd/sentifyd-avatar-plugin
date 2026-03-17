@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -79,6 +79,7 @@ function sentifyd_default_settings() {
         'sentifyd_terms_href'        => '',
         'sentifyd_privacy_href'      => '',
         'sentifyd_brand_name'        => '',
+        'sentifyd_voice_mode'        => 'standard',
         'sentifyd_brand_logo'        => '',
         'sentifyd_avatar_background' => '',
         'sentifyd_radius_corner'     => '',
@@ -109,6 +110,8 @@ function sentifyd_sanitize_settings($input) {
     $sanitized['sentifyd_terms_href']        = isset($input['sentifyd_terms_href']) ? esc_url_raw($input['sentifyd_terms_href']) : $sanitized['sentifyd_terms_href'];
     $sanitized['sentifyd_privacy_href']      = isset($input['sentifyd_privacy_href']) ? esc_url_raw($input['sentifyd_privacy_href']) : $sanitized['sentifyd_privacy_href'];
     $sanitized['sentifyd_brand_name']        = isset($input['sentifyd_brand_name']) ? sanitize_text_field($input['sentifyd_brand_name']) : $sanitized['sentifyd_brand_name'];
+    $voice_mode                              = isset($input['sentifyd_voice_mode']) ? sanitize_key($input['sentifyd_voice_mode']) : $sanitized['sentifyd_voice_mode'];
+    $sanitized['sentifyd_voice_mode']        = in_array($voice_mode, ['standard', 'realtime'], true) ? $voice_mode : 'standard';
     $sanitized['sentifyd_brand_logo']        = isset($input['sentifyd_brand_logo']) ? esc_url_raw($input['sentifyd_brand_logo']) : $sanitized['sentifyd_brand_logo'];
     $sanitized['sentifyd_avatar_background'] = isset($input['sentifyd_avatar_background']) ? sanitize_text_field($input['sentifyd_avatar_background']) : $sanitized['sentifyd_avatar_background'];
     $sanitized['sentifyd_radius_corner']     = isset($input['sentifyd_radius_corner']) ? sanitize_text_field($input['sentifyd_radius_corner']) : $sanitized['sentifyd_radius_corner'];
@@ -183,6 +186,14 @@ function sentifyd_settings_init() {
         'sentifyd_avatar_id',
         __('Avatar ID', 'sentifyd-avatar'),
         'sentifyd_avatar_id_render',
+        'sentifyd_options_group',
+        'sentifyd_general_section'
+    );
+
+    add_settings_field(
+        'sentifyd_voice_mode',
+        __('Voice mode', 'sentifyd-avatar'),
+        'sentifyd_voice_mode_render',
         'sentifyd_options_group',
         'sentifyd_general_section'
     );
@@ -314,7 +325,7 @@ function sentifyd_settings_init() {
     );
     add_settings_field(
         'sentifyd_color_text_primary_bg',
-        __('Text color primary on background', 'sentifyd-avatar'),
+        __('Text color on primary background', 'sentifyd-avatar'),
         'sentifyd_color_text_primary_bg_render',
         'sentifyd_options_group',
         'sentifyd_theme_section'
@@ -355,6 +366,32 @@ function sentifyd_get_option($key, $default = '') {
     return array_key_exists($key, $options) ? $options[$key] : $default;
 }
 
+/**
+ * Return the active Sentifyd frontend component metadata.
+ *
+ * @param array|null $settings Optional settings array to avoid duplicate lookups.
+ *
+ * @return array{voice_mode:string,element_tag:string,script_url:string}
+ */
+function sentifyd_get_component_config($settings = null) {
+    $settings = is_array($settings) ? $settings : (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $voice_mode = isset($settings['sentifyd_voice_mode']) ? sanitize_key($settings['sentifyd_voice_mode']) : 'standard';
+
+    if ($voice_mode === 'realtime') {
+        return [
+            'voice_mode'  => 'realtime',
+            'element_tag' => 'sentifyd-realtime',
+            'script_url'  => 'https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js',
+        ];
+    }
+
+    return [
+        'voice_mode'  => 'standard',
+        'element_tag' => 'sentifyd-bot',
+        'script_url'  => 'https://frontend.sentifyd.io/sentifyd-bot/main.js',
+    ];
+}
+
 function sentifyd_api_key_render() {
     ?>
     <div style="max-width:520px; display:flex; align-items:center; gap:8px;">
@@ -371,6 +408,25 @@ function sentifyd_avatar_id_render() {
     ?>
     <input type="text" name="sentifyd_settings[sentifyd_avatar_id]" value="<?php echo esc_attr(sentifyd_get_option('sentifyd_avatar_id')); ?>" class="regular-text">
     <p class="description"><strong><?php echo esc_html__('Required', 'sentifyd-avatar'); ?></strong>. <?php echo esc_html__('Find your Avatar ID in the avatar page in Sentifyd platform.', 'sentifyd-avatar'); ?></p>
+    <?php
+}
+
+function sentifyd_voice_mode_render() {
+    $voice_mode = sentifyd_get_option('sentifyd_voice_mode', 'standard');
+    ?>
+    <fieldset>
+        <label>
+            <input type="radio" name="sentifyd_settings[sentifyd_voice_mode]" value="standard" <?php checked($voice_mode, 'standard'); ?>>
+            <?php echo esc_html__('Standard', 'sentifyd-avatar'); ?>
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="sentifyd_settings[sentifyd_voice_mode]" value="realtime" <?php checked($voice_mode, 'realtime'); ?>>
+            <?php echo esc_html__('Real-time', 'sentifyd-avatar'); ?>
+        </label>
+    </fieldset>
+    <p class="description"><?php echo esc_html__('Standard is used for avatars with standard synthesized voices. Real-time is used for speech-to-speech avatars with realtime voice mode.', 'sentifyd-avatar'); ?></p>
+    <p class="description"><?php echo esc_html__('If you choose Real-time, the selected avatar in Sentifyd platform must be configured for realtime voice mode.', 'sentifyd-avatar'); ?></p>
     <?php
 }
 
@@ -544,12 +600,13 @@ function sentifyd_options_page_html() {
 }
 
 /**
- * Build the <sentifyd-bot> tag HTML based on current settings.
+ * Build the active Sentifyd avatar tag HTML based on current settings.
  *
  * @return string The HTML tag or empty string when required settings are missing.
  */
 function sentifyd_build_bot_tag() {
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $component = sentifyd_get_component_config($settings);
 
     $api_key        = isset($settings['sentifyd_api_key']) ? trim($settings['sentifyd_api_key']) : '';
     $token_endpoint = isset($settings['sentifyd_token_endpoint']) ? trim($settings['sentifyd_token_endpoint']) : '';
@@ -649,7 +706,7 @@ function sentifyd_build_bot_tag() {
         $html_attributes .= sprintf('%s="%s" ', esc_attr($key), esc_attr($val));
     }
 
-    return sprintf('<sentifyd-bot %s></sentifyd-bot>', $html_attributes);
+    return sprintf('<%1$s %2$s></%1$s>', $component['element_tag'], $html_attributes);
 }
 
 /**
@@ -662,10 +719,12 @@ function sentifyd_avatar_shortcode($atts) {
         return '';
     }
 
+    $component = sentifyd_get_component_config();
+
     // Ensure the script is present; element can be inline without auto-injection
     wp_enqueue_script(
         'sentifyd-main',
-        'https://frontend.sentifyd.io/sentifyd-bot/main.js',
+        $component['script_url'],
         [],
         SENTIFYD_AVATAR_VERSION,
         [
@@ -684,6 +743,7 @@ add_shortcode('sentifyd_avatar', 'sentifyd_avatar_shortcode');
 function sentifyd_deploy_bot() {
     // Auto-inject only when toggler is enabled (default). If disabled, rely on shortcode placement.
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $component = sentifyd_get_component_config($settings);
 
     $toggler_on = (!isset($settings['sentifyd_toggler']) || $settings['sentifyd_toggler'] === 'on');
     if (!$toggler_on) {
@@ -697,7 +757,7 @@ function sentifyd_deploy_bot() {
 
     wp_enqueue_script(
         'sentifyd-main',
-        'https://frontend.sentifyd.io/sentifyd-bot/main.js',
+        $component['script_url'],
         [],
         SENTIFYD_AVATAR_VERSION,
         [
@@ -706,7 +766,7 @@ function sentifyd_deploy_bot() {
         ]
     );
 
-    $inline_script = "document.addEventListener('DOMContentLoaded', function() {\n        if (!document.querySelector('sentifyd-bot')) {\n            document.body.insertAdjacentHTML('beforeend', " . wp_json_encode($bot_tag) . ");\n        }\n    });";
+    $inline_script = "document.addEventListener('DOMContentLoaded', function() {\n        if (!document.querySelector(" . wp_json_encode($component['element_tag']) . ")) {\n            document.body.insertAdjacentHTML('beforeend', " . wp_json_encode($bot_tag) . ");\n        }\n    });";
 
     wp_add_inline_script('sentifyd-main', $inline_script);
 }
@@ -736,6 +796,7 @@ add_filter('script_loader_tag', 'sentifyd_script_loader_tag', 10, 3);
 // Apply user-defined colors on the frontend if provided
 function sentifyd_enqueue_custom_css() {
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $component = sentifyd_get_component_config($settings);
     $map = [
         'sentifyd_color_primary'           => '--primary-color',
         'sentifyd_color_secondary'         => '--secondary-color',
@@ -754,7 +815,7 @@ function sentifyd_enqueue_custom_css() {
     // Register a dummy inline style handle and add our custom CSS variables
     wp_register_style('sentifyd-avatar-user-vars', false, [], SENTIFYD_AVATAR_VERSION);
     wp_enqueue_style('sentifyd-avatar-user-vars');
-    wp_add_inline_style('sentifyd-avatar-user-vars', 'sentifyd-bot {' . implode(' ', $lines) . '}');
+    wp_add_inline_style('sentifyd-avatar-user-vars', $component['element_tag'] . ' {' . implode(' ', $lines) . '}');
 }
 add_action('wp_enqueue_scripts', 'sentifyd_enqueue_custom_css');
 

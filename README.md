@@ -30,6 +30,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 ## ✨ Features
 
 - **Easy Installation**: Simple plugin setup with minimal configuration
+- **Voice Mode Switching**: Deploy `sentifyd-bot` for standard voice or `sentifyd-realtime` for realtime speech-to-speech avatars
 - **Secure Token Management**: Built-in REST endpoint for secure token generation
 - **Customizable Appearance**: Brand colors, logos, backgrounds, and border radius
 - **Flexible Deployment**: Auto-inject as toggler or embed using shortcode
@@ -44,6 +45,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 
 1. **Get Your Sentifyd Credentials**
    - Sign up at [sentifyd.io](https://sentifyd.io) and create your avatar
+   - If you plan to use Real-time voice mode, configure that avatar for realtime voice mode in Sentifyd
    - Note your **Avatar ID** and **API Key** from the avatar page
 
 2. **Download the Plugin**
@@ -61,6 +63,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
    - Go to **Sentifyd Avatar** in your WordPress admin sidebar
    - Enter your **Avatar API Key** (required)
    - Enter your **Avatar ID** (required)
+   - Choose **Voice mode**: **Standard** for `sentifyd-bot` or **Real-time** for `sentifyd-realtime`
    - Optionally configure branding, theme colors, and other settings
    - Click **Save Settings**
 
@@ -107,9 +110,12 @@ Then upload the ZIP file via **WordPress Admin** → **Plugins** → **Add New**
 
 #### Avatar Attributes
 
+- **Voice mode**: Choose **Standard** for `sentifyd-bot` or **Real-time** for `sentifyd-realtime`
 - **Require Authentication**: Restrict avatar access to logged-in users only
 - **Compact Mode**: Display avatar without header/footer
 - **Enable Captions**: Show captions on the avatar by default
+
+If you choose **Real-time**, the selected avatar in Sentifyd must also be configured for realtime voice mode.
 
 #### Branding
 
@@ -160,7 +166,7 @@ This plugin relies on external third-party services provided by Sentifyd to func
 
 **What it does:** Provides the JavaScript web component library that powers the 3D AI avatar interface displayed on your website.
 
-**Data sent and received:** The JavaScript file is loaded from `https://frontend.sentifyd.io/sentifyd-bot/main.js` whenever a page with the avatar is viewed.
+**Data sent and received:** The JavaScript file is loaded from `https://frontend.sentifyd.io/sentifyd-bot/main.js` in Standard voice mode or `https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js` in Real-time voice mode whenever a page with the avatar is viewed.
 
 **Service provider:** Sentifyd.io  
 [Terms of Service](https://sentifyd.io/terms) | [Privacy Policy](https://sentifyd.io/privacy)
