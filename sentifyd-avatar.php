@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -88,12 +88,46 @@ function sentifyd_default_settings() {
         'sentifyd_color_secondary'              => '',
         'sentifyd_color_text_primary_bg'        => '',
         'sentifyd_color_text_secondary_bg'      => '',
+        // display mode: toggler | embedded_full | embedded_compact | overlay
+        'sentifyd_display_mode'      => 'toggler',
         // booleans
-        'sentifyd_toggler'           => 'on',
-        'sentifyd_compact'           => 'off',
         'sentifyd_enable_captions'   => 'on',
         'sentifyd_require_auth'      => 'off',
     ];
+}
+
+/**
+ * Resolve the effective display mode, migrating from legacy boolean settings
+ * (sentifyd_toggler / sentifyd_compact / sentifyd_overlay) when an explicit
+ * sentifyd_display_mode value is not present.
+ *
+ * @param array  $settings   Plugin settings array.
+ * @param string $voice_mode Active voice mode ('standard' | 'realtime').
+ * @return string One of: toggler, embedded_full, embedded_compact, overlay.
+ */
+function sentifyd_resolve_display_mode($settings, $voice_mode = 'standard') {
+    $allowed = ['toggler', 'embedded_full', 'embedded_compact', 'overlay'];
+    $mode = isset($settings['sentifyd_display_mode']) ? sanitize_key($settings['sentifyd_display_mode']) : '';
+    if (!in_array($mode, $allowed, true)) {
+        // Migrate from legacy booleans
+        $legacy_overlay  = (isset($settings['sentifyd_overlay']) && $settings['sentifyd_overlay'] === 'on');
+        $legacy_toggler  = (!isset($settings['sentifyd_toggler']) || $settings['sentifyd_toggler'] === 'on');
+        $legacy_compact  = (isset($settings['sentifyd_compact']) && $settings['sentifyd_compact'] === 'on');
+        if ($legacy_overlay) {
+            $mode = 'overlay';
+        } elseif ($legacy_toggler) {
+            $mode = 'toggler';
+        } elseif ($legacy_compact) {
+            $mode = 'embedded_compact';
+        } else {
+            $mode = 'embedded_full';
+        }
+    }
+    // Overlay is realtime-only; downgrade silently otherwise
+    if ($mode === 'overlay' && $voice_mode !== 'realtime') {
+        $mode = 'toggler';
+    }
+    return $mode;
 }
 
 function sentifyd_sanitize_settings($input) {
@@ -146,8 +180,20 @@ function sentifyd_sanitize_settings($input) {
         }
     }
 
+    // Display mode (single select replacing toggler/compact/overlay)
+    $allowed_modes = ['toggler', 'embedded_full', 'embedded_compact', 'overlay'];
+    $mode_in = isset($input['sentifyd_display_mode']) ? sanitize_key($input['sentifyd_display_mode']) : '';
+    if (!in_array($mode_in, $allowed_modes, true)) {
+        $mode_in = 'toggler';
+    }
+    // Overlay requires real-time voice mode; downgrade to toggler otherwise
+    if ($mode_in === 'overlay' && $sanitized['sentifyd_voice_mode'] !== 'realtime') {
+        $mode_in = 'toggler';
+    }
+    $sanitized['sentifyd_display_mode'] = $mode_in;
+
     // Checkboxes: explicit on/off
-    foreach (['sentifyd_toggler','sentifyd_compact','sentifyd_enable_captions', 'sentifyd_require_auth'] as $checkbox) {
+    foreach (['sentifyd_enable_captions', 'sentifyd_require_auth'] as $checkbox) {
         $sanitized[$checkbox] = (isset($input[$checkbox]) && $input[$checkbox] === 'on') ? 'on' : 'off';
     }
 
@@ -222,17 +268,9 @@ function sentifyd_settings_init() {
     );
 
     add_settings_field(
-        'sentifyd_toggler',
-        __('Enable Toggler', 'sentifyd-avatar'),
-        'sentifyd_toggler_render',
-        'sentifyd_options_group',
-        'sentifyd_attributes_section'
-    );
-
-    add_settings_field(
-        'sentifyd_compact',
-        __('Compact Mode', 'sentifyd-avatar'),
-        'sentifyd_compact_render',
+        'sentifyd_display_mode',
+        __('Display Mode', 'sentifyd-avatar'),
+        'sentifyd_display_mode_render',
         'sentifyd_options_group',
         'sentifyd_attributes_section'
     );
@@ -446,30 +484,62 @@ function sentifyd_require_auth_render() {
     <?php
 }
 
-function sentifyd_toggler_render() {
+function sentifyd_display_mode_render() {
+    $settings   = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $voice_mode = isset($settings['sentifyd_voice_mode']) ? sanitize_key($settings['sentifyd_voice_mode']) : 'standard';
+    $current    = sentifyd_resolve_display_mode($settings, $voice_mode);
+    $shortcode  = '<code>[sentifyd_avatar]</code>';
     ?>
-    <input type="hidden" name="sentifyd_settings[sentifyd_toggler]" value="off">
-    <input id="sentifyd_toggler" type="checkbox" name="sentifyd_settings[sentifyd_toggler]" value="on" <?php checked(sentifyd_get_option('sentifyd_toggler', 'on'), 'on'); ?> >
-    <label for="sentifyd_toggler"><?php echo esc_html__('Display the avatar as a minimizable toggler (bottom-right style).', 'sentifyd-avatar'); ?></label>
-    <p class="description">
-        <?php echo esc_html__('When enabled (default), the plugin auto-injects the toggler on each page. When disabled, the avatar will not auto-inject;', 'sentifyd-avatar'); ?>
+    <select id="sentifyd_display_mode" name="sentifyd_settings[sentifyd_display_mode]">
+        <option value="toggler" <?php selected($current, 'toggler'); ?>><?php echo esc_html__('Toggler (default) — bottom-right minimizable widget', 'sentifyd-avatar'); ?></option>
+        <option value="embedded_full" <?php selected($current, 'embedded_full'); ?>><?php echo esc_html__('Embedded (full) — inline on the page with header and footer', 'sentifyd-avatar'); ?></option>
+        <option value="embedded_compact" <?php selected($current, 'embedded_compact'); ?>><?php echo esc_html__('Embedded (compact) — inline without header or footer', 'sentifyd-avatar'); ?></option>
+        <option value="overlay" data-realtime-only="1" <?php selected($current, 'overlay'); ?>><?php echo esc_html__('Overlay (Real-time only) — frameless, transparent, fills its host', 'sentifyd-avatar'); ?></option>
+    </select>
+    <p class="description sentifyd-display-mode-desc">
         <?php
-        $shortcode_sentence = sprintf(
-            /* translators: %s: shortcode to insert the avatar, e.g. <code>[sentifyd_avatar]</code> */
-            __('place it where you want using the shortcode %s.', 'sentifyd-avatar'),
-            '<code>[sentifyd_avatar]</code>'
+        echo wp_kses(
+            sprintf(
+                /* translators: %s: shortcode example */
+                __('Toggler auto-injects on every page. Embedded and Overlay modes do not auto-inject — place the avatar where you want using the shortcode %s inside a sized container.', 'sentifyd-avatar'),
+                $shortcode
+            ),
+            array('code' => array())
         );
-        echo wp_kses($shortcode_sentence, array('code' => array()));
         ?>
     </p>
-    <?php
-}
+    <p class="description sentifyd-overlay-realtime-hint" style="display:none;">
+        <em><?php echo esc_html__('Overlay is available only in Real-time voice mode. Switch Voice mode to Real-time above to enable it.', 'sentifyd-avatar'); ?></em>
+    </p>
+    <script>
+    (function () {
+        var sel = document.getElementById('sentifyd_display_mode');
+        if (!sel) return;
+        var hint = document.querySelector('.sentifyd-overlay-realtime-hint');
+        var radios = document.querySelectorAll('input[name="sentifyd_settings[sentifyd_voice_mode]"]');
+        var overlayOpt = sel.querySelector('option[value="overlay"]');
 
-function sentifyd_compact_render() {
-    ?>
-    <input type="hidden" name="sentifyd_settings[sentifyd_compact]" value="off">
-    <input id="sentifyd_compact" type="checkbox" name="sentifyd_settings[sentifyd_compact]" value="on" <?php checked(sentifyd_get_option('sentifyd_compact', 'off'), 'on'); ?> >
-    <label for="sentifyd_compact"><?php echo esc_html__('Displays the avatar without the header or footer.', 'sentifyd-avatar'); ?></label>
+        function getVoiceMode() {
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) return radios[i].value;
+            }
+            return 'standard';
+        }
+        function syncOverlayAvailability() {
+            var isRealtime = (getVoiceMode() === 'realtime');
+            if (!overlayOpt) return;
+            overlayOpt.disabled = !isRealtime;
+            if (hint) hint.style.display = isRealtime ? 'none' : '';
+            if (!isRealtime && sel.value === 'overlay') {
+                sel.value = 'toggler';
+            }
+        }
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].addEventListener('change', syncOverlayAvailability);
+        }
+        syncOverlayAvailability();
+    })();
+    </script>
     <?php
 }
 
@@ -647,25 +717,15 @@ function sentifyd_build_bot_tag() {
         $attributes['avatar-id']      = $avatar_id;
     }
 
-    // Boolean attributes with defaults:
-    // - toggler: defaults to true if not set
-    // - enable-captions: defaults to true if not set
-    // - compact: defaults to false
-    $bool_option_to_attr = [
-        'sentifyd_toggler'           => 'toggler',
-        'sentifyd_compact'           => 'compact',
-        'sentifyd_enable_captions'   => 'enable-captions',
-    ];
-
-    foreach ($bool_option_to_attr as $optKey => $attrName) {
-        // Establish default 'on' or 'off' for each attribute
-        $default_value = ($attrName === 'toggler' || $attrName === 'enable-captions') ? 'on' : 'off';
-        
-        // Get the saved value, falling back to the established default if not set
-        $value = isset($settings[$optKey]) ? $settings[$optKey] : $default_value;
-
-        // Convert 'on'/'off' to 'true'/'false' for the HTML attribute
-        $attributes[$attrName] = ($value === 'on') ? 'true' : 'false';
+    // Derive boolean attributes from the consolidated display mode.
+    $display_mode = sentifyd_resolve_display_mode($settings, $component['voice_mode']);
+    $attributes['toggler']         = ($display_mode === 'toggler') ? 'true' : 'false';
+    $attributes['compact']         = ($display_mode === 'embedded_compact') ? 'true' : 'false';
+    $captions_value                = isset($settings['sentifyd_enable_captions']) ? $settings['sentifyd_enable_captions'] : 'on';
+    $attributes['enable-captions'] = ($captions_value === 'on') ? 'true' : 'false';
+    if ($component['voice_mode'] === 'realtime') {
+        // Overlay attribute is only meaningful for the realtime web component.
+        $attributes['overlay'] = ($display_mode === 'overlay') ? 'true' : 'false';
     }
 
     // Text attributes mapping from options to kebab-case attributes
@@ -711,7 +771,18 @@ function sentifyd_build_bot_tag() {
 
 /**
  * Shortcode to place the avatar inline in content.
- * Usage: [sentifyd_avatar]
+ *
+ * Usage:
+ *   [sentifyd_avatar]
+ *   [sentifyd_avatar width="100%" height="600px"]
+ *   [sentifyd_avatar class="my-avatar-host" style="aspect-ratio: 3/4;"]
+ *
+ * In Overlay display mode the avatar is frameless, transparent, and fills its
+ * host element — so it MUST live inside a sized container or it will collapse
+ * to 0x0 and appear invisible. To make this foolproof in WordPress (where the
+ * shortcode is typically dropped directly into post content), this function
+ * wraps the avatar element in a sized <div> with sensible defaults whenever
+ * overlay mode is active. Authors can override the size via shortcode attrs.
  */
 function sentifyd_avatar_shortcode($atts) {
     $tag = sentifyd_build_bot_tag();
@@ -733,7 +804,61 @@ function sentifyd_avatar_shortcode($atts) {
         ]
     );
 
-    return $tag;
+    $atts = shortcode_atts(
+        [
+            'width'  => '',
+            'height' => '',
+            'class'  => '',
+            'style'  => '',
+        ],
+        is_array($atts) ? $atts : [],
+        'sentifyd_avatar'
+    );
+
+    $settings     = (array) get_option('sentifyd_settings', sentifyd_default_settings());
+    $display_mode = sentifyd_resolve_display_mode($settings, $component['voice_mode']);
+
+    // Embedded modes already render their own header/footer chrome with
+    // intrinsic sizing, so they don't need a host wrapper. Toggler is a
+    // floating widget that ignores its parent's box. Only Overlay needs a
+    // sized host to be visible.
+    if ($display_mode !== 'overlay') {
+        return $tag;
+    }
+
+    $width  = trim((string) $atts['width']);
+    $height = trim((string) $atts['height']);
+    $extra  = trim((string) $atts['style']);
+    $class  = trim((string) $atts['class']);
+
+    // Sensible defaults: full content width, 600px tall. Authors can override.
+    if ($width === '') {
+        $width = '100%';
+    }
+    if ($height === '') {
+        $height = '600px';
+    }
+
+    $style = sprintf(
+        'position:relative;width:%s;height:%s;',
+        esc_attr($width),
+        esc_attr($height)
+    );
+    if ($extra !== '') {
+        $style .= esc_attr($extra);
+    }
+
+    $class_attr = 'sentifyd-avatar-overlay-host';
+    if ($class !== '') {
+        $class_attr .= ' ' . esc_attr($class);
+    }
+
+    return sprintf(
+        '<div class="%s" style="%s">%s</div>',
+        $class_attr,
+        $style,
+        $tag
+    );
 }
 add_shortcode('sentifyd_avatar', 'sentifyd_avatar_shortcode');
 
@@ -742,11 +867,16 @@ add_shortcode('sentifyd_avatar', 'sentifyd_avatar_shortcode');
  */
 function sentifyd_deploy_bot() {
     // Auto-inject only when toggler is enabled (default). If disabled, rely on shortcode placement.
+    // Overlay mode is also opt-in via shortcode — the avatar must live inside a sized host
+    // element on the page, so a body-end injection would not produce a useful layout.
     $settings = (array) get_option('sentifyd_settings', sentifyd_default_settings());
     $component = sentifyd_get_component_config($settings);
 
-    $toggler_on = (!isset($settings['sentifyd_toggler']) || $settings['sentifyd_toggler'] === 'on');
-    if (!$toggler_on) {
+    // Auto-inject only for the toggler display mode. Embedded and overlay
+    // modes require a sized host element on the page, so the user must
+    // place the avatar with the [sentifyd_avatar] shortcode.
+    $display_mode = sentifyd_resolve_display_mode($settings, $component['voice_mode']);
+    if ($display_mode !== 'toggler') {
         return;
     }
 

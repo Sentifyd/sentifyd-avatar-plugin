@@ -33,6 +33,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 - **Voice Mode Switching**: Deploy `sentifyd-bot` for standard voice or `sentifyd-realtime` for realtime speech-to-speech avatars
 - **Secure Token Management**: Built-in REST endpoint for secure token generation
 - **Customizable Appearance**: Brand colors, logos, backgrounds, and border radius
+- **Four Display Modes**: Toggler (auto-inject), Embedded (full or compact), and Overlay (frameless, fills its host) for Real-time avatars
 - **Flexible Deployment**: Auto-inject as toggler or embed using shortcode
 - **Access Control**: Option to restrict avatar visibility to logged-in users
 - **Localization Ready**: Supports 6+ languages for both admin panel and avatar UI
@@ -103,19 +104,24 @@ Then upload the ZIP file via **WordPress Admin** → **Plugins** → **Add New**
 
 ### Optional Settings
 
-#### Deployment Mode
+#### Display Mode
 
-- **Enable Toggler** (default: ON): Auto-injects avatar as a minimizable button in bottom-right
-- **Shortcode Mode**: Disable toggler and use `[sentifyd_avatar]` shortcode to place avatar anywhere
+A single **Display mode** select controls how the avatar appears on your site:
+
+- **Toggler** (default): Auto-injects a minimizable floating button in the bottom-right corner of every page. No shortcode needed.
+- **Embedded (full)**: Inline panel rendered with the standard header and footer. Place where you want using the `[sentifyd_avatar]` shortcode.
+- **Embedded (compact)**: Inline panel without header or footer. Place using the shortcode.
+- **Overlay** *(Real-time voice mode only)*: Frameless, transparent rendering that fills its host element — no chrome, perfect for layering the avatar over a hero section or background. Place using the shortcode.
+
+Only **Toggler** auto-injects on every page. The other three modes require the `[sentifyd_avatar]` shortcode.
 
 #### Avatar Attributes
 
 - **Voice mode**: Choose **Standard** for `sentifyd-bot` or **Real-time** for `sentifyd-realtime`
 - **Require Authentication**: Restrict avatar access to logged-in users only
-- **Compact Mode**: Display avatar without header/footer
 - **Enable Captions**: Show captions on the avatar by default
 
-If you choose **Real-time**, the selected avatar in Sentifyd must also be configured for realtime voice mode.
+If you choose **Real-time**, the selected avatar in Sentifyd must also be configured for realtime voice mode. The **Overlay** display mode is only available when voice mode is set to **Real-time**.
 
 #### Branding
 
@@ -149,7 +155,7 @@ By default, the avatar appears as a minimizable button in the bottom-right corne
 
 ### Using Shortcode
 
-1. Disable **Enable Toggler** in settings
+1. Set **Display mode** to **Embedded (full)**, **Embedded (compact)**, or **Overlay** in settings.
 2. Add the shortcode where you want the avatar to appear:
 
 ```
@@ -157,6 +163,27 @@ By default, the avatar appears as a minimizable button in the bottom-right corne
 ```
 
 You can place this shortcode in posts, pages, widgets, or theme templates.
+
+#### Sizing in Overlay mode
+
+Because Overlay is frameless and transparent, it inherits its size from its host element. The shortcode automatically wraps the avatar in a sized container with sensible defaults (`100%` width × `600px` height) so it works out of the box in WordPress page content.
+
+To customize the size, pass `width` and/or `height` shortcode attributes — any valid CSS length is accepted (`px`, `%`, `vh`, `rem`, etc.):
+
+```
+[sentifyd_avatar height="500px"]
+[sentifyd_avatar width="400px" height="700px"]
+[sentifyd_avatar width="100%" height="80vh"]
+```
+
+You can also pass extra inline CSS or a CSS class:
+
+```
+[sentifyd_avatar height="600px" style="max-width:480px;margin:0 auto;"]
+[sentifyd_avatar class="my-avatar-host"]
+```
+
+In the other modes (Toggler, Embedded full, Embedded compact) the `width`/`height`/`style`/`class` attributes are ignored — those modes have their own intrinsic sizing.
 
 ## External Services
 

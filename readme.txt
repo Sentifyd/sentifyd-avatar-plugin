@@ -3,7 +3,7 @@ Contributors: sentifyd
 Tags: sentifyd, AI, avatars, agents, 3d avatar
 Requires at least: 6.3
 Tested up to: 6.8
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -83,7 +83,7 @@ The installation of the Sentifyd Avatar plugin is straightforward:
 3.  Activate the plugin through the 'Plugins' menu in WordPress, and go to the new 'Sentifyd Avatar' menu in your WordPress admin sidebar.
 4.  Enter your "API Key" and your "Avatar ID" (both required for simple API Key deployment). Alternatively, provide your "Secure Token Endpoint" and your "Avatar ID" if you want more control of the API key's security. Check the documentation at docs.sentifyd.io.
 5.  Choose the "Voice mode" setting. Standard deploys the `sentifyd-bot` avatar. Real-time deploys the `sentifyd-realtime` avatar for speech-to-speech experiences.
-6.  By default, the avatar will be installed on the bottom right corner like a site chatbot in all pages. If you want to embed the avatar in a specific location in your site, uncheck the "Enable Toggler" option, and use the short code [sentifyd_avatar] to add the avatar in your site. 
+6.  By default, the avatar will be installed on the bottom right corner like a site chatbot in all pages. If you want to embed the avatar in a specific location in your site, change the "Display Mode" setting to Embedded (full), Embedded (compact), or Overlay (Real-time only), and use the shortcode [sentifyd_avatar] to place the avatar where you want. In Overlay mode the shortcode gives the avatar a sized container automatically (default 100% width × 600px height); to customize, pass `width` and/or `height` shortcode attributes, e.g. `[sentifyd_avatar height="500px"]` or `[sentifyd_avatar width="400px" height="700px"]`.
 7.  Optionally, set your branding attributes such as Brand Name, Brand Logo URL, etc.
 8.  You can also optionally change the installed avatar widget theme.
 9.  Click "Save Settings". The avatar will now appear on your site.
@@ -117,6 +117,13 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 
 
 == Changelog ==
+
+= 1.4.0 =
+* Added a new "Display Mode" setting that consolidates the previous Toggler / Compact / Overlay options into a single selector with four choices: Toggler (default), Embedded (full), Embedded (compact), and Overlay (Real-time only).
+* Added Overlay mode for Real-time avatars: renders the avatar frameless and transparent so it appears directly on your page (no header, footer, or panel chrome).
+* The Overlay option is only selectable when Voice mode is set to Real-time, and the selector now reflects that immediately when you switch Voice mode (no save required).
+* Embedded and Overlay modes do not auto-inject; place the avatar where you want using the `[sentifyd_avatar]` shortcode inside a sized container.
+* Existing installations are migrated automatically: previous Toggler / Compact / Overlay checkbox values are mapped to the equivalent display mode on first load.
 
 = 1.3.0 =
 * Added a new "Voice mode" setting with Standard and Real-time options.
