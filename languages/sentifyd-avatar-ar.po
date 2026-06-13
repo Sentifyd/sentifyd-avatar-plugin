@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2026-05-02 17:43+0300\n"
-"PO-Revision-Date: 2026-05-02 18:10+0300\n"
+"POT-Creation-Date: 2026-06-13 14:33+0300\n"
+"PO-Revision-Date: 2026-06-13 15:08+0300\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: العربية\n"
 "Language: ar\n"
@@ -214,49 +214,58 @@ msgstr "مدمج مع اطار (مضغوط) — داخل الصفحة بدون �
 msgid "Overlay (Real-time only) — frameless, transparent, fills its host"
 msgstr "بدون إطار (لوضع الصوت الفوري فقط) — شفافة، تملأ الحاوية"
 
-#: sentifyd-avatar.php:504
+#: sentifyd-avatar.php:498
+msgid ""
+"Overlay + Toggler (Real-time only) — frameless overlay with a minimizable "
+"toggler"
+msgstr ""
+"عرض بدون إطار + زر الأفتار (لوضع الصوت الفوري فقط) — عرض بدون إطار مع زر أفتار "
+"قابل للتصغير"
+
+#: sentifyd-avatar.php:505
 #, php-format
 msgid ""
-"Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
-"inject — place the avatar where you want using the shortcode %s inside a sized "
-"container."
+"Toggler and Overlay + Toggler auto-inject on every page. Embedded and Overlay "
+"modes do not auto-inject — place the avatar where you want using the shortcode "
+"%s inside a sized container."
 msgstr ""
-"يتم إدراج وضع زر الأفتار تلقائيًا في كل صفحة. أما وضعا الإدماج العرض بدون اطار "
-"فلا يتم إدراجهما تلقائيًا — ضع الصورة الرمزية حيث تريد باستخدام الرمز المختصر "
-"%s داخل حاوية محدَّدة الحجم."
+"يتم إدراج وضعي زر الأفتار و«عرض بدون إطار + زر الأفتار» تلقائيًا في كل صفحة. "
+"أما وضعا الإدماج والعرض بدون إطار فلا يتم إدراجهما تلقائيًا — ضع الصورة الرمزية "
+"حيث تريد باستخدام الرمز المختصر %s داخل حاوية محدَّدة الحجم."
 
-#: sentifyd-avatar.php:512
+#: sentifyd-avatar.php:513
 msgid ""
-"Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
-"time above to enable it."
+"Overlay modes are available only in Real-time voice mode. Switch Voice mode to "
+"Real-time above to enable them."
 msgstr ""
-"العرض بدون اطار متاح فقط في وضع الصوت الفوري. غيِّر وضع الصوت إلى أعلاه لتفعيلها."
+"أوضاع العرض بدون إطار متاحة فقط في وضع الصوت الفوري. غيِّر وضع الصوت إلى الفوري "
+"أعلاه لتفعيلها."
 
-#: sentifyd-avatar.php:550
+#: sentifyd-avatar.php:555
 msgid "Show captions on the avatar by default."
 msgstr "إظهار العناوين على الأفاتار بشكل افتراضي."
 
-#: sentifyd-avatar.php:557
+#: sentifyd-avatar.php:562
 msgid "Full URL to your Terms of Service."
 msgstr "عنوان URL الكامل لشروط الخدمة."
 
-#: sentifyd-avatar.php:564
+#: sentifyd-avatar.php:569
 msgid "Full URL to your Privacy Policy."
 msgstr "عنوان URL الكامل لسياسة الخصوصية."
 
-#: sentifyd-avatar.php:571
+#: sentifyd-avatar.php:576
 msgid "The name of your brand or institution, used in the exported transcripts."
 msgstr "اسم علامتك التجارية أو مؤسستك، ويُستخدم في النسخ المصدّرة."
 
-#: sentifyd-avatar.php:578
+#: sentifyd-avatar.php:583
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "عنوان URL لصورة الشعار المعروضة في رأس الأفاتار."
 
-#: sentifyd-avatar.php:584
+#: sentifyd-avatar.php:589
 msgid "#ffffff or transparent"
 msgstr "#ffffff أو شفاف"
 
-#: sentifyd-avatar.php:585
+#: sentifyd-avatar.php:590
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, rgb(0 "
 "0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -264,11 +273,11 @@ msgstr ""
 "الخلفية وراء الأفاتار. تقبل قيمة لون CSS (مثل #ffffff أو rgb(0 0 0 / 0.5) أو "
 "linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
 
-#: sentifyd-avatar.php:591
+#: sentifyd-avatar.php:596
 msgid "12px, 1rem, 50%"
 msgstr "12px، 1rem، 50%"
 
-#: sentifyd-avatar.php:592
+#: sentifyd-avatar.php:597
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -276,19 +285,19 @@ msgstr ""
 "نصف قطر الزاوية المنحنية لواجهة المستخدم. يقبل قيم طول CSS (على سبيل المثال، "
 "12px، 1rem، 50%). اضبط على 0 للزوايا المربعة."
 
-#: sentifyd-avatar.php:655
+#: sentifyd-avatar.php:660
 msgid "Save Settings"
 msgstr "حفظ الإعدادات"
 
-#: sentifyd-avatar.php:661
+#: sentifyd-avatar.php:666
 msgid "Sentifyd Account Management"
 msgstr "إدارة حساب Sentifyd"
 
-#: sentifyd-avatar.php:662
+#: sentifyd-avatar.php:667
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "إدارة حساب Sentifyd وأرصدة المحادثات."
 
-#: sentifyd-avatar.php:665
+#: sentifyd-avatar.php:670
 msgid "Visit Sentifyd.io"
 msgstr "زيارة Sentifyd.io"
 

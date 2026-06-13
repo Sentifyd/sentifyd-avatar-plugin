@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2026-05-02 17:43+0300\n"
-"PO-Revision-Date: 2026-05-02 18:24+0300\n"
+"POT-Creation-Date: 2026-06-13 14:33+0300\n"
+"PO-Revision-Date: 2026-06-13 15:12+0300\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -207,49 +207,56 @@ msgstr "嵌入（紧凑）— 内嵌于页面，无页眉和页脚"
 msgid "Overlay (Real-time only) — frameless, transparent, fills its host"
 msgstr "覆盖层（仅限实时模式）— 无边框、透明，填充其容器"
 
-#: sentifyd-avatar.php:504
+#: sentifyd-avatar.php:498
+msgid ""
+"Overlay + Toggler (Real-time only) — frameless overlay with a minimizable "
+"toggler"
+msgstr "覆盖层 + 悬浮按钮（仅限实时模式）— 无边框覆盖层，带可最小化的悬浮按钮"
+
+#: sentifyd-avatar.php:505
 #, php-format
 msgid ""
-"Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
-"inject — place the avatar where you want using the shortcode %s inside a "
-"sized container."
+"Toggler and Overlay + Toggler auto-inject on every page. Embedded and "
+"Overlay modes do not auto-inject — place the avatar where you want using the "
+"shortcode %s inside a sized container."
 msgstr ""
-"悬浮按钮模式会自动注入到每个页面。嵌入和覆盖层模式不会自动注入 — 请使用短代"
-"码 %s 将虚拟形象放置在已设定尺寸的容器中。"
+"悬浮按钮和覆盖层 + 悬浮按钮模式会自动注入到每个页面。嵌入和覆盖层模式不会自动"
+"注入 — 请使用短代码 %s 将虚拟形象放置在已设定尺寸的容器中。"
 
-#: sentifyd-avatar.php:512
+#: sentifyd-avatar.php:513
 msgid ""
-"Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
-"time above to enable it."
+"Overlay modes are available only in Real-time voice mode. Switch Voice mode "
+"to Real-time above to enable them."
 msgstr ""
-"覆盖层仅在实时语音模式下可用。请将上方的语音模式切换为实时以启用此功能。"
+"覆盖层模式仅在实时语音模式下可用。请将上方的语音模式切换为实时以启用这些功"
+"能。"
 
-#: sentifyd-avatar.php:550
+#: sentifyd-avatar.php:555
 msgid "Show captions on the avatar by default."
 msgstr "默认显示头像字幕。"
 
-#: sentifyd-avatar.php:557
+#: sentifyd-avatar.php:562
 msgid "Full URL to your Terms of Service."
 msgstr "服务条款的完整 URL。"
 
-#: sentifyd-avatar.php:564
+#: sentifyd-avatar.php:569
 msgid "Full URL to your Privacy Policy."
 msgstr "隐私政策的完整 URL。"
 
-#: sentifyd-avatar.php:571
+#: sentifyd-avatar.php:576
 msgid ""
 "The name of your brand or institution, used in the exported transcripts."
 msgstr "您品牌或机构的名称，将用于导出的对话记录。"
 
-#: sentifyd-avatar.php:578
+#: sentifyd-avatar.php:583
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "显示在头像页眉中的徽标图片 URL。"
 
-#: sentifyd-avatar.php:584
+#: sentifyd-avatar.php:589
 msgid "#ffffff or transparent"
 msgstr "#ffffff 或 transparent"
 
-#: sentifyd-avatar.php:585
+#: sentifyd-avatar.php:590
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -257,11 +264,11 @@ msgstr ""
 "头像背景。接受 CSS 颜色值（例如 #ffffff、rgb(0 0 0 / 0.5) 或 linear-"
 "gradient(135deg, #4f46e5 0%, #06b6d4 100%)）。"
 
-#: sentifyd-avatar.php:591
+#: sentifyd-avatar.php:596
 msgid "12px, 1rem, 50%"
 msgstr "12px, 1rem, 50%"
 
-#: sentifyd-avatar.php:592
+#: sentifyd-avatar.php:597
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -269,19 +276,19 @@ msgstr ""
 "头像小部件的弯曲角半径。接受 CSS 长度值（例如,12px、1rem、50%)。将方角设置为 "
 "0。"
 
-#: sentifyd-avatar.php:655
+#: sentifyd-avatar.php:660
 msgid "Save Settings"
 msgstr "保存设置"
 
-#: sentifyd-avatar.php:661
+#: sentifyd-avatar.php:666
 msgid "Sentifyd Account Management"
 msgstr "Sentifyd 账户管理"
 
-#: sentifyd-avatar.php:662
+#: sentifyd-avatar.php:667
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "管理您的 Sentifyd 账户和会话额度。"
 
-#: sentifyd-avatar.php:665
+#: sentifyd-avatar.php:670
 msgid "Visit Sentifyd.io"
 msgstr "访问 Sentifyd.io"
 

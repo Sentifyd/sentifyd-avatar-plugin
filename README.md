@@ -33,7 +33,7 @@ Sentifyd.io empowers you to deploy intelligent, real-time 3D AI agents—fully a
 - **Voice Mode Switching**: Deploy `sentifyd-bot` for standard voice or `sentifyd-realtime` for realtime speech-to-speech avatars
 - **Secure Token Management**: Built-in REST endpoint for secure token generation
 - **Customizable Appearance**: Brand colors, logos, backgrounds, and border radius
-- **Four Display Modes**: Toggler (auto-inject), Embedded (full or compact), and Overlay (frameless, fills its host) for Real-time avatars
+- **Five Display Modes**: Toggler (auto-inject), Embedded (full or compact), Overlay, and Overlay + Toggler (a frameless overlay with a floating toggler) for Real-time avatars
 - **Flexible Deployment**: Auto-inject as toggler or embed using shortcode
 - **Access Control**: Option to restrict avatar visibility to logged-in users
 - **Localization Ready**: Supports 6+ languages for both admin panel and avatar UI
@@ -112,8 +112,9 @@ A single **Display mode** select controls how the avatar appears on your site:
 - **Embedded (full)**: Inline panel rendered with the standard header and footer. Place where you want using the `[sentifyd_avatar]` shortcode.
 - **Embedded (compact)**: Inline panel without header or footer. Place using the shortcode.
 - **Overlay** *(Real-time voice mode only)*: Frameless, transparent rendering that fills its host element — no chrome, perfect for layering the avatar over a hero section or background. Place using the shortcode.
+- **Overlay + Toggler** *(Real-time voice mode only)*: A frameless, transparent overlay paired with a minimizable floating toggler. Like the standard Toggler, it auto-injects on every page — no shortcode needed.
 
-Only **Toggler** auto-injects on every page. The other three modes require the `[sentifyd_avatar]` shortcode.
+**Toggler** and **Overlay + Toggler** auto-inject on every page. The Embedded and Overlay modes require the `[sentifyd_avatar]` shortcode.
 
 #### Avatar Attributes
 
@@ -121,7 +122,7 @@ Only **Toggler** auto-injects on every page. The other three modes require the `
 - **Require Authentication**: Restrict avatar access to logged-in users only
 - **Enable Captions**: Show captions on the avatar by default
 
-If you choose **Real-time**, the selected avatar in Sentifyd must also be configured for realtime voice mode. The **Overlay** display mode is only available when voice mode is set to **Real-time**.
+If you choose **Real-time**, the selected avatar in Sentifyd must also be configured for realtime voice mode. The **Overlay** and **Overlay + Toggler** display modes are only available when voice mode is set to **Real-time**.
 
 #### Branding
 
