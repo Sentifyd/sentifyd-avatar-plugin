@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar v1.5.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2026-06-13 14:33+0300\n"
+"POT-Creation-Date: 2026-06-13 15:12+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Sentifyd <info@sentifyd.io>\n"
 "Language-Team: \n"
@@ -121,9 +121,9 @@ msgstr ""
 
 #: sentifyd-avatar.php:386
 msgid ""
-"This plugin embeds the Sentifyd avatar web component which stores session-scoped data in the browser (sessionStorage) to maintain UI state and conversation context. Keys "
-"may include avatar open/closed state, authentication data such as short-lived tokens, and conversation transcript. Data clears when the tab/window closes. No data is "
-"stored in cookies or local storage by the widget."
+"This plugin embeds the Sentifyd avatar web component which stores session-scoped data in the browser (sessionStorage) to maintain UI state and conversation context. Keys may include avatar "
+"open/closed state, authentication data such as short-lived tokens, and conversation transcript. Data clears when the tab/window closes. No data is stored in cookies or local storage by the "
+"widget."
 msgstr ""
 
 #: sentifyd-avatar.php:437
@@ -164,8 +164,8 @@ msgstr ""
 
 #: sentifyd-avatar.php:474
 msgid ""
-"Optional. If provided, the avatar will call your secure token endpoint to obtain short-lived session tokens. If omitted, this plugin uses its built-in WordPress REST "
-"endpoint to mint tokens using your stored API key (which is never exposed to the browser)."
+"Optional. If provided, the avatar will call your secure token endpoint to obtain short-lived session tokens. If omitted, this plugin uses its built-in WordPress REST endpoint to mint tokens "
+"using your stored API key (which is never exposed to the browser)."
 msgstr ""
 
 #: sentifyd-avatar.php:482

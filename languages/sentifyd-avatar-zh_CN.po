@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
 "POT-Creation-Date: 2026-06-13 14:33+0300\n"
-"PO-Revision-Date: 2026-06-13 14:42+0300\n"
+"PO-Revision-Date: 2026-06-13 15:12+0300\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: 简体中文\n"
 "Language: zh_CN\n"
@@ -216,19 +216,20 @@ msgstr "覆盖层 + 悬浮按钮（仅限实时模式）— 无边框覆盖层�
 #: sentifyd-avatar.php:505
 #, php-format
 msgid ""
-"Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
-"inject — place the avatar where you want using the shortcode %s inside a "
-"sized container."
+"Toggler and Overlay + Toggler auto-inject on every page. Embedded and "
+"Overlay modes do not auto-inject — place the avatar where you want using the "
+"shortcode %s inside a sized container."
 msgstr ""
-"悬浮按钮模式会自动注入到每个页面。嵌入和覆盖层模式不会自动注入 — 请使用短代"
-"码 %s 将虚拟形象放置在已设定尺寸的容器中。"
+"悬浮按钮和覆盖层 + 悬浮按钮模式会自动注入到每个页面。嵌入和覆盖层模式不会自动"
+"注入 — 请使用短代码 %s 将虚拟形象放置在已设定尺寸的容器中。"
 
 #: sentifyd-avatar.php:513
 msgid ""
-"Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
-"time above to enable it."
+"Overlay modes are available only in Real-time voice mode. Switch Voice mode "
+"to Real-time above to enable them."
 msgstr ""
-"覆盖层仅在实时语音模式下可用。请将上方的语音模式切换为实时以启用此功能。"
+"覆盖层模式仅在实时语音模式下可用。请将上方的语音模式切换为实时以启用这些功"
+"能。"
 
 #: sentifyd-avatar.php:555
 msgid "Show captions on the avatar by default."
