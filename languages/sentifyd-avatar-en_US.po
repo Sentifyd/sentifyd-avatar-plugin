@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2026-03-17 20:18+0200\n"
-"PO-Revision-Date: 2026-03-17 20:39+0200\n"
+"POT-Creation-Date: 2026-06-13 14:33+0300\n"
+"PO-Revision-Date: 2026-06-13 14:35+0300\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: English (US)\n"
 "Language: en_US\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Domain: sentifyd-avatar\n"
 "X-Generator: Poedit 3.8\n"
 
-#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:353
+#: sentifyd-avatar.php:37 sentifyd-avatar.php:38 sentifyd-avatar.php:391
 msgid "Sentifyd Avatar"
 msgstr "Sentifyd Avatar"
 
@@ -22,101 +22,97 @@ msgstr "Sentifyd Avatar"
 msgid "Settings"
 msgstr "Settings"
 
-#: sentifyd-avatar.php:172
+#: sentifyd-avatar.php:218
 msgid "Avatar Settings"
 msgstr "Avatar Settings"
 
-#: sentifyd-avatar.php:179
+#: sentifyd-avatar.php:225
 msgid "Enter your avatar API Key"
 msgstr "Enter your avatar API Key"
 
-#: sentifyd-avatar.php:187
+#: sentifyd-avatar.php:233
 msgid "Avatar ID"
 msgstr "Avatar ID"
 
-#: sentifyd-avatar.php:195
+#: sentifyd-avatar.php:241
 msgid "Voice mode"
 msgstr "Voice mode"
 
-#: sentifyd-avatar.php:203
+#: sentifyd-avatar.php:249
 msgid "Secure Token Endpoint"
 msgstr "Secure Token Endpoint"
 
-#: sentifyd-avatar.php:211
+#: sentifyd-avatar.php:257
 msgid "Require Authentication"
 msgstr "Require Authentication"
 
-#: sentifyd-avatar.php:219
+#: sentifyd-avatar.php:265
 msgid "Other Avatar Attributes"
 msgstr "Other Avatar Attributes"
 
-#: sentifyd-avatar.php:226
-msgid "Enable Toggler"
-msgstr "Enable Toggler"
+#: sentifyd-avatar.php:272
+msgid "Display Mode"
+msgstr "Display Mode"
 
-#: sentifyd-avatar.php:234
-msgid "Compact Mode"
-msgstr "Compact Mode"
-
-#: sentifyd-avatar.php:242
+#: sentifyd-avatar.php:280
 msgid "Enable Captions"
 msgstr "Enable Captions"
 
-#: sentifyd-avatar.php:250
+#: sentifyd-avatar.php:288
 msgid "Branding Attributes"
 msgstr "Branding Attributes"
 
-#: sentifyd-avatar.php:257
+#: sentifyd-avatar.php:295
 msgid "Brand Name"
 msgstr "Brand Name"
 
-#: sentifyd-avatar.php:265
+#: sentifyd-avatar.php:303
 msgid "Brand Logo URL"
 msgstr "Brand Logo URL"
 
-#: sentifyd-avatar.php:273
+#: sentifyd-avatar.php:311
 msgid "Terms Link"
 msgstr "Terms Link"
 
-#: sentifyd-avatar.php:281
+#: sentifyd-avatar.php:319
 msgid "Privacy Link"
 msgstr "Privacy Link"
 
-#: sentifyd-avatar.php:289
+#: sentifyd-avatar.php:327
 msgid "Avatar Widget Theme"
 msgstr "Avatar Widget Theme"
 
-#: sentifyd-avatar.php:291
+#: sentifyd-avatar.php:329
 msgid ""
 "Customize the avatar widget theme. Leave blank to use built-in defaults."
 msgstr ""
 "Customize the avatar widget theme. Leave blank to use built-in defaults."
 
-#: sentifyd-avatar.php:298
+#: sentifyd-avatar.php:336
 msgid "Avatar Background"
 msgstr "Avatar Background"
 
-#: sentifyd-avatar.php:306
+#: sentifyd-avatar.php:344
 msgid "Curved Corner Radius"
 msgstr "Curved Corner Radius"
 
-#: sentifyd-avatar.php:314
+#: sentifyd-avatar.php:352
 msgid "Primary color"
 msgstr "Primary color"
 
-#: sentifyd-avatar.php:321
+#: sentifyd-avatar.php:359
 msgid "Secondary color"
 msgstr "Secondary color"
 
-#: sentifyd-avatar.php:328
+#: sentifyd-avatar.php:366
 msgid "Text color on primary background"
 msgstr "Text color on primary background"
 
-#: sentifyd-avatar.php:335
+#: sentifyd-avatar.php:373
 msgid "Text color on secondary background"
 msgstr "Text color on secondary background"
 
-#: sentifyd-avatar.php:348
+#: sentifyd-avatar.php:386
 msgid ""
 "This plugin embeds the Sentifyd avatar web component which stores session-"
 "scoped data in the browser (sessionStorage) to maintain UI state and "
@@ -132,15 +128,15 @@ msgstr ""
 "Data clears when the tab/window closes. No data is stored in cookies or "
 "local storage by the widget."
 
-#: sentifyd-avatar.php:399
+#: sentifyd-avatar.php:437
 msgid "Show API Key"
 msgstr "Show API Key"
 
-#: sentifyd-avatar.php:399
+#: sentifyd-avatar.php:437
 msgid "Hide API Key"
 msgstr "Hide API Key"
 
-#: sentifyd-avatar.php:403
+#: sentifyd-avatar.php:441
 msgid ""
 "Stored server-side only and used to mint short-lived tokens; never exposed "
 "in the browser DOM. Required unless you provide a custom token endpoint."
@@ -148,23 +144,23 @@ msgstr ""
 "Stored server-side only and used to mint short-lived tokens; never exposed "
 "in the browser DOM. Required unless you provide a custom token endpoint."
 
-#: sentifyd-avatar.php:410
+#: sentifyd-avatar.php:448
 msgid "Required"
 msgstr "Required"
 
-#: sentifyd-avatar.php:410
+#: sentifyd-avatar.php:448
 msgid "Find your Avatar ID in the avatar page in Sentifyd platform."
 msgstr "Find your Avatar ID in the avatar page in Sentifyd platform."
 
-#: sentifyd-avatar.php:420
+#: sentifyd-avatar.php:458
 msgid "Standard"
 msgstr "Standard"
 
-#: sentifyd-avatar.php:425
+#: sentifyd-avatar.php:463
 msgid "Real-time"
 msgstr "Real-time"
 
-#: sentifyd-avatar.php:428
+#: sentifyd-avatar.php:466
 msgid ""
 "Standard is used for avatars with standard synthesized voices. Real-time is "
 "used for speech-to-speech avatars with realtime voice mode."
@@ -172,7 +168,7 @@ msgstr ""
 "Standard is used for avatars with standard synthesized voices. Real-time is "
 "used for speech-to-speech avatars with realtime voice mode."
 
-#: sentifyd-avatar.php:429
+#: sentifyd-avatar.php:467
 msgid ""
 "If you choose Real-time, the selected avatar in Sentifyd platform must be "
 "configured for realtime voice mode."
@@ -180,7 +176,7 @@ msgstr ""
 "If you choose Real-time, the selected avatar in Sentifyd platform must be "
 "configured for realtime voice mode."
 
-#: sentifyd-avatar.php:436
+#: sentifyd-avatar.php:474
 msgid ""
 "Optional. If provided, the avatar will call your secure token endpoint to "
 "obtain short-lived session tokens. If omitted, this plugin uses its built-in "
@@ -192,11 +188,11 @@ msgstr ""
 "WordPress REST endpoint to mint tokens using your stored API key (which is "
 "never exposed to the browser)."
 
-#: sentifyd-avatar.php:444
+#: sentifyd-avatar.php:482
 msgid "Only display the avatar to logged-in users."
 msgstr "Only display the avatar to logged-in users."
 
-#: sentifyd-avatar.php:445
+#: sentifyd-avatar.php:483
 msgid ""
 "If enabled, guest visitors will not see the avatar and the API endpoint will "
 "reject unauthenticated requests."
@@ -204,54 +200,76 @@ msgstr ""
 "If enabled, guest visitors will not see the avatar and the API endpoint will "
 "reject unauthenticated requests."
 
-#: sentifyd-avatar.php:453
-msgid "Display the avatar as a minimizable toggler (bottom-right style)."
-msgstr "Display the avatar as a minimizable toggler (bottom-right style)."
+#: sentifyd-avatar.php:494
+msgid "Toggler (default) — bottom-right minimizable widget"
+msgstr "Toggler (default) — bottom-right minimizable widget"
 
-#: sentifyd-avatar.php:455
+#: sentifyd-avatar.php:495
+msgid "Embedded (full) — inline on the page with header and footer"
+msgstr "Embedded (full) — inline on the page with header and footer"
+
+#: sentifyd-avatar.php:496
+msgid "Embedded (compact) — inline without header or footer"
+msgstr "Embedded (compact) — inline without header or footer"
+
+#: sentifyd-avatar.php:497
+msgid "Overlay (Real-time only) — frameless, transparent, fills its host"
+msgstr "Overlay (Real-time only) — frameless, transparent, fills its host"
+
+#: sentifyd-avatar.php:498
 msgid ""
-"When enabled (default), the plugin auto-injects the toggler on each page. "
-"When disabled, the avatar will not auto-inject;"
+"Overlay + Toggler (Real-time only) — frameless overlay with a minimizable "
+"toggler"
 msgstr ""
-"When enabled (default), the plugin auto-injects the toggler on each page. "
-"When disabled, the avatar will not auto-inject;"
+"Overlay + Toggler (Real-time only) — frameless overlay with a minimizable "
+"toggler"
 
-#: sentifyd-avatar.php:459
+#: sentifyd-avatar.php:505
 #, php-format
-msgid "place it where you want using the shortcode %s."
-msgstr "place it where you want using the shortcode %s."
+msgid ""
+"Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
+"inject — place the avatar where you want using the shortcode %s inside a "
+"sized container."
+msgstr ""
+"Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
+"inject — place the avatar where you want using the shortcode %s inside a "
+"sized container."
 
-#: sentifyd-avatar.php:472
-msgid "Displays the avatar without the header or footer."
-msgstr "Displays the avatar without the header or footer."
+#: sentifyd-avatar.php:513
+msgid ""
+"Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
+"time above to enable it."
+msgstr ""
+"Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
+"time above to enable it."
 
-#: sentifyd-avatar.php:480
+#: sentifyd-avatar.php:555
 msgid "Show captions on the avatar by default."
 msgstr "Show captions on the avatar by default."
 
-#: sentifyd-avatar.php:487
+#: sentifyd-avatar.php:562
 msgid "Full URL to your Terms of Service."
 msgstr "Full URL to your Terms of Service."
 
-#: sentifyd-avatar.php:494
+#: sentifyd-avatar.php:569
 msgid "Full URL to your Privacy Policy."
 msgstr "Full URL to your Privacy Policy."
 
-#: sentifyd-avatar.php:501
+#: sentifyd-avatar.php:576
 msgid ""
 "The name of your brand or institution, used in the exported transcripts."
 msgstr ""
 "The name of your brand or institution, used in the exported transcripts."
 
-#: sentifyd-avatar.php:508
+#: sentifyd-avatar.php:583
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "The URL of the logo image displayed in the avatar's header."
 
-#: sentifyd-avatar.php:514
+#: sentifyd-avatar.php:589
 msgid "#ffffff or transparent"
 msgstr "#ffffff or transparent"
 
-#: sentifyd-avatar.php:515
+#: sentifyd-avatar.php:590
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -259,11 +277,11 @@ msgstr ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
 
-#: sentifyd-avatar.php:521
+#: sentifyd-avatar.php:596
 msgid "12px, 1rem, 50%"
 msgstr "12px, 1rem, 50%"
 
-#: sentifyd-avatar.php:522
+#: sentifyd-avatar.php:597
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -271,21 +289,44 @@ msgstr ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
 
-#: sentifyd-avatar.php:585
+#: sentifyd-avatar.php:660
 msgid "Save Settings"
 msgstr "Save Settings"
 
-#: sentifyd-avatar.php:591
+#: sentifyd-avatar.php:666
 msgid "Sentifyd Account Management"
 msgstr "Sentifyd Account Management"
 
-#: sentifyd-avatar.php:592
+#: sentifyd-avatar.php:667
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "Manage your Sentifyd account and conversation credits."
 
-#: sentifyd-avatar.php:595
+#: sentifyd-avatar.php:670
 msgid "Visit Sentifyd.io"
 msgstr "Visit Sentifyd.io"
+
+#~ msgid "Enable Toggler"
+#~ msgstr "Enable Toggler"
+
+#~ msgid "Compact Mode"
+#~ msgstr "Compact Mode"
+
+#~ msgid "Display the avatar as a minimizable toggler (bottom-right style)."
+#~ msgstr "Display the avatar as a minimizable toggler (bottom-right style)."
+
+#~ msgid ""
+#~ "When enabled (default), the plugin auto-injects the toggler on each page. "
+#~ "When disabled, the avatar will not auto-inject;"
+#~ msgstr ""
+#~ "When enabled (default), the plugin auto-injects the toggler on each page. "
+#~ "When disabled, the avatar will not auto-inject;"
+
+#, php-format
+#~ msgid "place it where you want using the shortcode %s."
+#~ msgstr "place it where you want using the shortcode %s."
+
+#~ msgid "Displays the avatar without the header or footer."
+#~ msgstr "Displays the avatar without the header or footer."
 
 #~ msgid ""
 #~ "Standard uses the sentifyd-bot component. Real-time uses the sentifyd-"

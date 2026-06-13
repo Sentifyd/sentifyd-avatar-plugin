@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sentifyd Avatar 1.1.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
-"POT-Creation-Date: 2026-05-02 17:43+0300\n"
-"PO-Revision-Date: 2026-05-02 18:22+0300\n"
+"POT-Creation-Date: 2026-06-13 14:33+0300\n"
+"PO-Revision-Date: 2026-06-13 14:43+0300\n"
 "Last-Translator: Ibrahim Hossain <ibrahim@sentifyd.io>\n"
 "Language-Team: Français\n"
 "Language: fr_FR\n"
@@ -224,7 +224,15 @@ msgstr ""
 "Superposition (Temps réel uniquement) — sans cadre, transparent, remplit son "
 "conteneur"
 
-#: sentifyd-avatar.php:504
+#: sentifyd-avatar.php:498
+msgid ""
+"Overlay + Toggler (Real-time only) — frameless overlay with a minimizable "
+"toggler"
+msgstr ""
+"Superposition + Bouton flottant (Temps réel uniquement) — superposition sans "
+"cadre avec bouton flottant réductible"
+
+#: sentifyd-avatar.php:505
 #, php-format
 msgid ""
 "Toggler auto-injects on every page. Embedded and Overlay modes do not auto-"
@@ -236,7 +244,7 @@ msgstr ""
 "l'avatar où vous le souhaitez à l'aide du shortcode %s dans un conteneur de "
 "taille définie."
 
-#: sentifyd-avatar.php:512
+#: sentifyd-avatar.php:513
 msgid ""
 "Overlay is available only in Real-time voice mode. Switch Voice mode to Real-"
 "time above to enable it."
@@ -244,34 +252,34 @@ msgstr ""
 "La Superposition n'est disponible qu'en mode vocal Temps réel. Basculez le "
 "Mode vocal sur Temps réel ci-dessus pour l'activer."
 
-#: sentifyd-avatar.php:550
+#: sentifyd-avatar.php:555
 msgid "Show captions on the avatar by default."
 msgstr "Afficher les sous-titres sur l'avatar par défaut."
 
-#: sentifyd-avatar.php:557
+#: sentifyd-avatar.php:562
 msgid "Full URL to your Terms of Service."
 msgstr "URL complète de vos conditions d'utilisation."
 
-#: sentifyd-avatar.php:564
+#: sentifyd-avatar.php:569
 msgid "Full URL to your Privacy Policy."
 msgstr "URL complète de votre politique de confidentialité."
 
-#: sentifyd-avatar.php:571
+#: sentifyd-avatar.php:576
 msgid ""
 "The name of your brand or institution, used in the exported transcripts."
 msgstr ""
 "Le nom de votre marque ou institution, utilisé dans les transcriptions "
 "exportées."
 
-#: sentifyd-avatar.php:578
+#: sentifyd-avatar.php:583
 msgid "The URL of the logo image displayed in the avatar's header."
 msgstr "L'URL du logo affiché dans l'en-tête de l'avatar."
 
-#: sentifyd-avatar.php:584
+#: sentifyd-avatar.php:589
 msgid "#ffffff or transparent"
 msgstr "#ffffff ou transparent"
 
-#: sentifyd-avatar.php:585
+#: sentifyd-avatar.php:590
 msgid ""
 "Background behind the avatar. Accepts a CSS color value (e.g., #ffffff, "
 "rgb(0 0 0 / 0.5), or linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%))."
@@ -280,11 +288,11 @@ msgstr ""
 "#ffffff, rgb(0 0 0 / 0.5) ou linear-gradient(135deg, #4f46e5 0%, #06b6d4 "
 "100%))."
 
-#: sentifyd-avatar.php:591
+#: sentifyd-avatar.php:596
 msgid "12px, 1rem, 50%"
 msgstr "12px, 1rem, 50%"
 
-#: sentifyd-avatar.php:592
+#: sentifyd-avatar.php:597
 msgid ""
 "Curved corner radius for the avatar widget. Accepts CSS length values (e.g., "
 "12px, 1rem, 50%). Set to 0 for square corners."
@@ -292,19 +300,19 @@ msgstr ""
 "Rayon d’angle courbé pour le widget avatar. Accepte les valeurs de longueur "
 "CSS (par exemple, 12px, 1rem, 50%). Définissez à 0 pour les coins carrés."
 
-#: sentifyd-avatar.php:655
+#: sentifyd-avatar.php:660
 msgid "Save Settings"
 msgstr "Enregistrer les réglages"
 
-#: sentifyd-avatar.php:661
+#: sentifyd-avatar.php:666
 msgid "Sentifyd Account Management"
 msgstr "Gestion du compte Sentifyd"
 
-#: sentifyd-avatar.php:662
+#: sentifyd-avatar.php:667
 msgid "Manage your Sentifyd account and conversation credits."
 msgstr "Gérez votre compte Sentifyd et vos crédits de conversation."
 
-#: sentifyd-avatar.php:665
+#: sentifyd-avatar.php:670
 msgid "Visit Sentifyd.io"
 msgstr "Visiter Sentifyd.io"
 
