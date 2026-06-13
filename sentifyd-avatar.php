@@ -502,7 +502,7 @@ function sentifyd_display_mode_render() {
         echo wp_kses(
             sprintf(
                 /* translators: %s: shortcode example */
-                __('Toggler auto-injects on every page. Embedded and Overlay modes do not auto-inject — place the avatar where you want using the shortcode %s inside a sized container.', 'sentifyd-avatar'),
+                __('Toggler and Overlay + Toggler auto-inject on every page. Embedded and Overlay modes do not auto-inject — place the avatar where you want using the shortcode %s inside a sized container.', 'sentifyd-avatar'),
                 $shortcode
             ),
             array('code' => array())
@@ -510,7 +510,7 @@ function sentifyd_display_mode_render() {
         ?>
     </p>
     <p class="description sentifyd-overlay-realtime-hint" style="display:none;">
-        <em><?php echo esc_html__('Overlay is available only in Real-time voice mode. Switch Voice mode to Real-time above to enable it.', 'sentifyd-avatar'); ?></em>
+        <em><?php echo esc_html__('Overlay modes are available only in Real-time voice mode. Switch Voice mode to Real-time above to enable them.', 'sentifyd-avatar'); ?></em>
     </p>
     <script>
     (function () {

@@ -4,7 +4,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Sentifyd Avatar v1.4.0\n"
+"Project-Id-Version: Sentifyd Avatar v1.5.0\n"
 "Report-Msgid-Bugs-To: Sentifyd <info@sentifyd.io>\n"
 "POT-Creation-Date: 2026-06-13 14:33+0300\n"
 "PO-Revision-Date: \n"
@@ -198,11 +198,11 @@ msgstr ""
 
 #: sentifyd-avatar.php:505
 #, php-format
-msgid "Toggler auto-injects on every page. Embedded and Overlay modes do not auto-inject — place the avatar where you want using the shortcode %s inside a sized container."
+msgid "Toggler and Overlay + Toggler auto-inject on every page. Embedded and Overlay modes do not auto-inject — place the avatar where you want using the shortcode %s inside a sized container."
 msgstr ""
 
 #: sentifyd-avatar.php:513
-msgid "Overlay is available only in Real-time voice mode. Switch Voice mode to Real-time above to enable it."
+msgid "Overlay modes are available only in Real-time voice mode. Switch Voice mode to Real-time above to enable them."
 msgstr ""
 
 #: sentifyd-avatar.php:555
