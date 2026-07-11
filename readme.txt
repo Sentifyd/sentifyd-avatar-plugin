@@ -3,7 +3,7 @@ Contributors: sentifyd
 Tags: sentifyd, AI, avatars, agents, 3d avatar
 Requires at least: 6.3
 Tested up to: 6.8
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -117,6 +117,9 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 
 
 == Changelog ==
+
+= 1.5.1 =
+* Added support for opaque public avatar IDs while retaining compatibility with legacy numeric IDs.
 
 = 1.5.0 =
 * Added a new "Overlay + Toggler" display mode for Real-time avatars: a frameless, transparent overlay paired with a minimizable floating toggler. Like the standard Toggler, it auto-injects on every page — no shortcode required.

@@ -100,7 +100,7 @@ Then upload the ZIP file via **WordPress Admin** → **Plugins** → **Add New**
 | Setting | Description |
 |---------|-------------|
 | **Avatar API Key** | Your avatar's API key from sentifyd.io (stored server-side only) |
-| **Avatar ID** | Your avatar's unique identifier from sentifyd.io |
+| **Avatar ID** | Your avatar's public identifier from sentifyd.io. Legacy numeric IDs remain supported. |
 
 ### Optional Settings
 

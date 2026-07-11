@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.5.0
+ * Version:           1.5.1
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -997,9 +997,10 @@ function sentifyd_rest_request_tokens( \WP_REST_Request $request ) {
     $stored_api_key  = trim($settings['sentifyd_api_key'] ?? '');
     $stored_avatarId = trim($settings['sentifyd_avatar_id'] ?? '');
 
-    // Accept ?avatar_id=...; fallback to stored setting
+    // Preserve opaque public IDs and legacy numeric IDs as strings.
     $req_avatar_id = $request->get_param('avatar_id');
-    $avatar_id     = is_numeric($req_avatar_id) ? (int) $req_avatar_id : ($stored_avatarId !== '' ? (int) $stored_avatarId : null);
+    $req_avatar_id = is_scalar($req_avatar_id) ? trim((string) $req_avatar_id) : '';
+    $avatar_id     = $req_avatar_id !== '' ? $req_avatar_id : ($stored_avatarId !== '' ? $stored_avatarId : null);
 
     if (!$stored_api_key) {
         return new \WP_REST_Response(['error' => 'Avatar API key is not configured'], 500);
