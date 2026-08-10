@@ -1,7 +1,7 @@
 # Build script for Sentifyd Avatar Plugin
 
 $pluginSlug = "sentifyd-avatar"
-$version = "1.5.1"
+$version = "1.5.2"
 $distDir = Join-Path $PSScriptRoot "dist"
 $zipName = "$pluginSlug-v$version.zip"
 $zipPath = Join-Path $distDir $zipName
@@ -31,7 +31,8 @@ $includeList = @(
     "uninstall.php",
     "readme.txt",
     "LICENSE",
-    "languages"
+    "languages",
+    "assets"
 )
 
 Write-Host "Copying files..." -ForegroundColor Cyan
