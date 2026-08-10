@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.5.1
+ * Version:           1.5.2
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -149,6 +149,7 @@ function sentifyd_sanitize_settings($input) {
     $sanitized['sentifyd_brand_logo']        = isset($input['sentifyd_brand_logo']) ? esc_url_raw($input['sentifyd_brand_logo']) : $sanitized['sentifyd_brand_logo'];
     $sanitized['sentifyd_avatar_background'] = isset($input['sentifyd_avatar_background']) ? sanitize_text_field($input['sentifyd_avatar_background']) : $sanitized['sentifyd_avatar_background'];
     $sanitized['sentifyd_radius_corner']     = isset($input['sentifyd_radius_corner']) ? sanitize_text_field($input['sentifyd_radius_corner']) : $sanitized['sentifyd_radius_corner'];
+    unset($sanitized['sentifyd_backend_base_url']);
     
     // Color fields
     $color_keys = [
@@ -414,20 +415,121 @@ function sentifyd_get_option($key, $default = '') {
 function sentifyd_get_component_config($settings = null) {
     $settings = is_array($settings) ? $settings : (array) get_option('sentifyd_settings', sentifyd_default_settings());
     $voice_mode = isset($settings['sentifyd_voice_mode']) ? sanitize_key($settings['sentifyd_voice_mode']) : 'standard';
+    $is_development = defined('WP_DEBUG') && WP_DEBUG;
 
     if ($voice_mode === 'realtime') {
-        return [
+        $component = [
             'voice_mode'  => 'realtime',
             'element_tag' => 'sentifyd-realtime',
-            'script_url'  => 'https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js',
+            'script_url'  => $is_development
+                ? 'http://localhost:7085/sentifyd-realtime/v1/main.js'
+                : 'https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js',
         ];
+        return apply_filters('sentifyd_avatar_component_config', $component, $settings);
     }
 
-    return [
+    $component = [
         'voice_mode'  => 'standard',
         'element_tag' => 'sentifyd-bot',
-        'script_url'  => 'https://frontend.sentifyd.io/sentifyd-bot/main.js',
+        'script_url'  => $is_development
+            ? 'http://localhost:7085/sentifyd-bot/main.js'
+            : 'https://frontend.sentifyd.io/sentifyd-bot/main.js',
     ];
+    return apply_filters('sentifyd_avatar_component_config', $component, $settings);
+}
+
+/**
+ * Resolve the backend origin used by token exchange and the browser client.
+ *
+ * Production always uses the hosted backend. Local overrides are available
+ * only when WordPress debug mode is enabled.
+ *
+ * @return string Backend origin without a trailing slash.
+ */
+function sentifyd_get_backend_base_url() {
+    $backend_base = 'https://serve.sentifyd.io';
+
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        if (defined('SENTIFYD_DEV_BACKEND_BASE_URL') && is_string(SENTIFYD_DEV_BACKEND_BASE_URL)) {
+            $dev_backend_base = trim(SENTIFYD_DEV_BACKEND_BASE_URL);
+            if ($dev_backend_base !== '') {
+                $backend_base = $dev_backend_base;
+            }
+        }
+        $backend_base = apply_filters('sentifyd_backend_base', $backend_base);
+    }
+
+    return rtrim($backend_base, '/');
+}
+
+/**
+ * Expose a debug-only backend override before the frontend module executes.
+ *
+ * @param string $handle Enqueued frontend script handle.
+ * @return void
+ */
+function sentifyd_enqueue_backend_override($handle = 'sentifyd-main') {
+    if (!defined('WP_DEBUG') || !WP_DEBUG) {
+        return;
+    }
+
+    $backend_base = sentifyd_get_backend_base_url();
+    if ($backend_base === '' || $backend_base === 'https://serve.sentifyd.io') {
+        return;
+    }
+
+    // WordPress may run inside Docker while the browser runs on the host.
+    // The Docker-only hostname must be translated for browser requests.
+    $browser_backend_base = preg_replace(
+        '#^(https?://)(host\.docker\.internal|gateway\.docker\.internal)(?=[:/]|$)#i',
+        '$1localhost',
+        $backend_base
+    );
+
+    wp_add_inline_script(
+        $handle,
+        'window.VITE_APP_SOCKET_URL = ' . wp_json_encode($browser_backend_base) . ';',
+        'before'
+    );
+}
+
+/**
+ * Register the native same-origin WordPress and WooCommerce action provider.
+ * The provider exposes no credentials: it uses only the visitor's existing
+ * WordPress and WooCommerce browser session through public Store API routes.
+ */
+function sentifyd_enqueue_native_action_provider() {
+    $capabilities = [
+        'wordpress.search_posts',
+        'wordpress.get_post',
+    ];
+    if (class_exists('WooCommerce')) {
+        $capabilities = array_merge($capabilities, [
+            'woocommerce.search_products',
+            'woocommerce.get_product',
+            'woocommerce.get_cart',
+            'woocommerce.add_to_cart',
+            'woocommerce.update_cart',
+            'woocommerce.remove_from_cart',
+        ]);
+    }
+
+    $capabilities = apply_filters('sentifyd_action_provider_capabilities', $capabilities);
+    wp_enqueue_script(
+        'sentifyd-native-action-provider',
+        plugins_url('assets/js/sentifyd-wp-provider.js', __FILE__),
+        [],
+        SENTIFYD_AVATAR_VERSION,
+        true
+    );
+    wp_add_inline_script(
+        'sentifyd-native-action-provider',
+        'window.SentifydWordPressProvider = ' . wp_json_encode([
+            'capabilities' => array_values($capabilities),
+            'wpApiRoot' => esc_url_raw(rest_url()),
+        ]) . ';',
+        'before'
+    );
 }
 
 function sentifyd_api_key_render() {
@@ -797,6 +899,7 @@ function sentifyd_avatar_shortcode($atts) {
     }
 
     $component = sentifyd_get_component_config();
+    sentifyd_enqueue_native_action_provider();
 
     // Ensure the script is present; element can be inline without auto-injection
     wp_enqueue_script(
@@ -809,6 +912,7 @@ function sentifyd_avatar_shortcode($atts) {
             'strategy'  => 'async',
         ]
     );
+    sentifyd_enqueue_backend_override('sentifyd-main');
 
     $atts = shortcode_atts(
         [
@@ -890,6 +994,8 @@ function sentifyd_deploy_bot() {
         return;
     }
 
+    sentifyd_enqueue_native_action_provider();
+
     wp_enqueue_script(
         'sentifyd-main',
         $component['script_url'],
@@ -900,6 +1006,7 @@ function sentifyd_deploy_bot() {
             'strategy'  => 'async',
         ]
     );
+    sentifyd_enqueue_backend_override('sentifyd-main');
 
     $inline_script = "document.addEventListener('DOMContentLoaded', function() {\n        if (!document.querySelector(" . wp_json_encode($component['element_tag']) . ")) {\n            document.body.insertAdjacentHTML('beforeend', " . wp_json_encode($bot_tag) . ");\n        }\n    });";
 
@@ -1010,7 +1117,9 @@ function sentifyd_rest_request_tokens( \WP_REST_Request $request ) {
     }
 
     // Tiny cache per avatar to reduce upstream load
-    $cache_key = 'sentifyd_token_' . md5((string) $avatar_id);
+    $backend_base = sentifyd_get_backend_base_url();
+
+    $cache_key = 'sentifyd_token_' . md5((string) $avatar_id . '|' . $backend_base);
     $cached    = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['tokens']) && isset($cached['expires_at']) && (time() < ((int) $cached['expires_at'] - 10))) {
         return new \WP_REST_Response([
@@ -1018,10 +1127,6 @@ function sentifyd_rest_request_tokens( \WP_REST_Request $request ) {
             'avatarParameters' => $cached['avatarParameters'] ?? null,
         ], 200);
     }
-
-    // Backend origin — allow integrators to override via filter.
-    $backend_base = 'https://serve.sentifyd.io';
-    $backend_base = rtrim(apply_filters('sentifyd_backend_base', $backend_base), '/');
 
     $login_endpoints = [
         $backend_base . '/api/v1/chatbot/login',
