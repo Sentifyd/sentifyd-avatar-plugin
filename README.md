@@ -148,14 +148,6 @@ If you want full control over token issuance:
 3. The plugin will call your endpoint instead of the built-in one
 4. Your endpoint must return tokens in the expected format (see [documentation](https://docs.sentifyd.io))
 
-
-### Local Frontend Development
-
-With `WP_DEBUG` enabled, the plugin loads the local frontend bundles served by
-the development stack at `http://localhost:7085`. It uses
-`/sentifyd-bot/main.js` for Standard mode and
-`/sentifyd-realtime/v1/main.js` for Real-time mode. With `WP_DEBUG` disabled,
-it uses the published Sentifyd frontend URL.
 ## 🚀 Usage
 
 ### As a Toggler (Default)
