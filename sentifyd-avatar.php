@@ -483,10 +483,9 @@ function sentifyd_get_backend_base_url() {
                 $backend_base = $dev_backend_base;
             }
         }
-        $backend_base = apply_filters('sentifyd_backend_base', $backend_base);
     }
 
-    return rtrim($backend_base, '/');
+    return rtrim(apply_filters('sentifyd_backend_base', $backend_base), '/');
 }
 
 /**
