@@ -35,7 +35,6 @@ jobs:
             --exclude=".vscode" \
             --exclude="dist" \
             --exclude="build.ps1" \
-            --exclude="assets" \
             --exclude="README.md" \
             --exclude="*.zip" \
             --exclude="*.tar.gz" \
