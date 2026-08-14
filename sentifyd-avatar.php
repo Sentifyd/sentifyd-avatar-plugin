@@ -406,6 +406,37 @@ function sentifyd_get_option($key, $default = '') {
 }
 
 /**
+ * Check whether local Sentifyd development services are explicitly enabled.
+ *
+ * @return bool
+ */
+function sentifyd_is_development_mode() {
+    return defined('SENTIFYD_DEV_MODE') && SENTIFYD_DEV_MODE;
+}
+
+/**
+ * Resolve the frontend origin used by local development bundles.
+ *
+ * @return string Frontend origin without a trailing slash.
+ */
+function sentifyd_get_frontend_base_url() {
+    $frontend_base = 'https://frontend.sentifyd.io';
+
+    if (sentifyd_is_development_mode()) {
+        $frontend_base = 'http://localhost:7085';
+        if (defined('SENTIFYD_DEV_FRONTEND_BASE_URL') && is_string(SENTIFYD_DEV_FRONTEND_BASE_URL)) {
+            $dev_frontend_base = trim(SENTIFYD_DEV_FRONTEND_BASE_URL);
+            if ($dev_frontend_base !== '') {
+                $frontend_base = $dev_frontend_base;
+            }
+        }
+        $frontend_base = apply_filters('sentifyd_frontend_base', $frontend_base);
+    }
+
+    return rtrim($frontend_base, '/');
+}
+
+/**
  * Return the active Sentifyd frontend component metadata.
  *
  * @param array|null $settings Optional settings array to avoid duplicate lookups.
@@ -415,15 +446,13 @@ function sentifyd_get_option($key, $default = '') {
 function sentifyd_get_component_config($settings = null) {
     $settings = is_array($settings) ? $settings : (array) get_option('sentifyd_settings', sentifyd_default_settings());
     $voice_mode = isset($settings['sentifyd_voice_mode']) ? sanitize_key($settings['sentifyd_voice_mode']) : 'standard';
-    $is_development = defined('WP_DEBUG') && WP_DEBUG;
+    $frontend_base = sentifyd_get_frontend_base_url();
 
     if ($voice_mode === 'realtime') {
         $component = [
             'voice_mode'  => 'realtime',
             'element_tag' => 'sentifyd-realtime',
-            'script_url'  => $is_development
-                ? 'http://localhost:7085/sentifyd-realtime/v1/main.js'
-                : 'https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js',
+            'script_url'  => $frontend_base . '/sentifyd-realtime/v1/main.js',
         ];
         return apply_filters('sentifyd_avatar_component_config', $component, $settings);
     }
@@ -431,9 +460,7 @@ function sentifyd_get_component_config($settings = null) {
     $component = [
         'voice_mode'  => 'standard',
         'element_tag' => 'sentifyd-bot',
-        'script_url'  => $is_development
-            ? 'http://localhost:7085/sentifyd-bot/main.js'
-            : 'https://frontend.sentifyd.io/sentifyd-bot/main.js',
+        'script_url'  => $frontend_base . '/sentifyd-bot/main.js',
     ];
     return apply_filters('sentifyd_avatar_component_config', $component, $settings);
 }
@@ -442,14 +469,14 @@ function sentifyd_get_component_config($settings = null) {
  * Resolve the backend origin used by token exchange and the browser client.
  *
  * Production always uses the hosted backend. Local overrides are available
- * only when WordPress debug mode is enabled.
+ * only when SENTIFYD_DEV_MODE is explicitly enabled.
  *
  * @return string Backend origin without a trailing slash.
  */
 function sentifyd_get_backend_base_url() {
     $backend_base = 'https://serve.sentifyd.io';
 
-    if (defined('WP_DEBUG') && WP_DEBUG) {
+    if (sentifyd_is_development_mode()) {
         if (defined('SENTIFYD_DEV_BACKEND_BASE_URL') && is_string(SENTIFYD_DEV_BACKEND_BASE_URL)) {
             $dev_backend_base = trim(SENTIFYD_DEV_BACKEND_BASE_URL);
             if ($dev_backend_base !== '') {
@@ -469,7 +496,7 @@ function sentifyd_get_backend_base_url() {
  * @return void
  */
 function sentifyd_enqueue_backend_override($handle = 'sentifyd-main') {
-    if (!defined('WP_DEBUG') || !WP_DEBUG) {
+    if (!sentifyd_is_development_mode()) {
         return;
     }
 
