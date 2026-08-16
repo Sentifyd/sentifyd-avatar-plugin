@@ -1109,7 +1109,95 @@ add_action('rest_api_init', function () {
             return true;
         },
     ]);
+
+    // Public, read-only product variation summaries for the avatar provider.
+    // Mirrors the WooCommerce Store API visibility rules: only published,
+    // purchasable-relevant fields are exposed, and only for public products.
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/variations', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_variations',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+        ],
+    ]);
 });
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/variations
+ *
+ * Returns a compact, safe list of purchasable variation summaries for a
+ * published variable product. Avoids the need for the browser provider to
+ * scrape the product page HTML for `data-product_variations`.
+ *
+ * Response shape: array of variation summaries, e.g.
+ * [
+ *   {
+ *     "id": 123,
+ *     "attributes": { "attribute_color": "blue", "attribute_size": "m" },
+ *     "price": "1999",
+ *     "currency": "USD",
+ *     "currencyMinorUnit": 2,
+ *     "inStock": true,
+ *     "isPurchasable": true
+ *   }
+ * ]
+ */
+function sentifyd_rest_product_variations( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response([], 200);
+    }
+
+    $product_id = (int) $request->get_param('id');
+    $product    = wc_get_product($product_id);
+
+    // Only expose variations for published, publicly-visible products.
+    if (!$product || $product->get_status() !== 'publish') {
+        return new \WP_REST_Response([], 200);
+    }
+
+    if (!$product->is_type('variable')) {
+        return new \WP_REST_Response([], 200);
+    }
+
+    $prices     = $product->get_variation_prices(true);
+    $currency   = get_woocommerce_currency();
+    $minor_unit = (int) wc_get_price_decimals();
+
+    $variations = [];
+    foreach ($product->get_children() as $variation_id) {
+        $variation = wc_get_product($variation_id);
+        if (!$variation || !$variation->is_type('variation')) {
+            continue;
+        }
+        if (!$variation->variation_is_visible()) {
+            continue;
+        }
+
+        // Price in the store's minor units, matching Store API conventions.
+        $price = isset($prices['price'][$variation_id]) && $prices['price'][$variation_id] !== ''
+            ? (string) intval(round(((float) $prices['price'][$variation_id]) * pow(10, $minor_unit)))
+            : null;
+
+        $variations[] = [
+            'id'                => (int) $variation_id,
+            'attributes'        => $variation->get_attributes(),
+            'price'             => $price,
+            'currency'          => $currency,
+            'currencyMinorUnit' => $minor_unit,
+            'inStock'           => (bool) $variation->is_in_stock(),
+            'isPurchasable'     => (bool) $variation->is_purchasable(),
+        ];
+    }
+
+    return new \WP_REST_Response($variations, 200);
+}
 
 /**
  * GET /wp-json/sentifyd/v1/request_tokens
