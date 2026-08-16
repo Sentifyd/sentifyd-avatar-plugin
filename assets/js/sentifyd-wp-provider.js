@@ -349,6 +349,9 @@
     total: cart.totals?.total_price,
     currency: cart.totals?.currency_code,
     currencyMinorUnit: cart.totals?.currency_minor_unit,
+    coupons: (cart.coupons || []).map((coupon) => coupon.code),
+    cartUrl: config.cartUrl || undefined,
+    checkoutUrl: config.checkoutUrl || undefined,
     items: (cart.items || []).map((item) => ({
       key: item.key,
       productId: item.id,
@@ -357,6 +360,13 @@
       total: item.totals?.line_total,
     })),
   });
+
+  const validateCouponCode = (code) => {
+    const normalized = typeof code === "string" ? code.trim() : "";
+    if (!normalized) throw new Error("A coupon code is required");
+    if (normalized.length > 100) throw new Error("The coupon code is too long");
+    return normalized;
+  };
 
   // Notify the host WooCommerce theme that the cart changed so cart widgets,
   // mini-carts and counts refresh without a page reload. The Store API does
@@ -753,6 +763,149 @@
         notifyCartChanged(cart, "removed_from_cart");
         return { cart: cartSummary(cart) };
       },
+    },
+    {
+      name: "woocommerce.get_categories",
+      provider: "woocommerce",
+      description: "List the store's WooCommerce product categories. Use a returned category id with woocommerce.search_products to browse that category.",
+      inputSchema: { type: "object", properties: {} },
+      execute: async () => {
+        const categories = await request(buildStoreUrl("products/categories", {
+          hide_empty: true,
+          per_page: 50,
+        }));
+        if (!Array.isArray(categories)) throw new Error("Unexpected category response");
+        return {
+          categories: categories.map((category) => ({
+            id: category.id,
+            name: plainText(category.name, 200),
+            count: category.count,
+            permalink: category.permalink,
+          })),
+        };
+      },
+    },
+    {
+      name: "woocommerce.apply_coupon",
+      provider: "woocommerce",
+      classification: "write",
+      confirmation: "required",
+      description: "Apply a coupon code to the visitor's cart. Use only with an explicit code the visitor provided.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          code: { type: "string", minLength: 1, description: "The coupon code the visitor provided." },
+        },
+        required: ["code"],
+      },
+      execute: async ({ code }) => {
+        const validCode = validateCouponCode(code);
+        await ensureStoreNonce();
+        const cart = await storeRequest(buildStoreUrl("cart/apply-coupon"), {
+          method: "POST",
+          body: { code: validCode },
+        });
+        notifyCartChanged(cart, "updated_cart_totals");
+        return { cart: cartSummary(cart) };
+      },
+    },
+    {
+      name: "woocommerce.remove_coupon",
+      provider: "woocommerce",
+      classification: "write",
+      confirmation: "required",
+      description: "Remove an applied coupon from the visitor's cart. Use a coupon code returned by woocommerce.get_cart or woocommerce.apply_coupon.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          code: { type: "string", minLength: 1, description: "The applied coupon code to remove." },
+        },
+        required: ["code"],
+      },
+      execute: async ({ code }) => {
+        const validCode = validateCouponCode(code);
+        await ensureStoreNonce();
+        const cart = await storeRequest(buildStoreUrl("cart/remove-coupon"), {
+          method: "POST",
+          body: { code: validCode },
+        });
+        notifyCartChanged(cart, "updated_cart_totals");
+        return { cart: cartSummary(cart) };
+      },
+    },
+    {
+      name: "woocommerce.get_product_reviews",
+      provider: "woocommerce",
+      description: "Retrieve approved customer reviews for a product previously returned by woocommerce.search_products or woocommerce.get_product. Summarize pros and cons; cite the average rating and review count.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          product_id: { type: "integer", description: "Product ID from search_products or get_product." },
+          per_page: { type: "integer", minimum: 1, maximum: 20, description: "Number of reviews. Defaults to 10." },
+        },
+        required: ["product_id"],
+      },
+      execute: async ({ product_id: productId, per_page: perPage }) => {
+        const numericId = parsePositiveInteger(productId, "product_id");
+        const limit = Math.min(Math.max(Number(perPage) || 10, 1), 20);
+        return request(buildWpUrl(`sentifyd/v1/products/${encodeURIComponent(numericId)}/reviews`, {
+          per_page: limit,
+        }));
+      },
+    },
+    {
+      name: "woocommerce.get_related_products",
+      provider: "woocommerce",
+      description: "Retrieve related products, upsells, and cross-sells for a product previously returned by woocommerce.search_products or woocommerce.get_product. Results are product summaries that can be offered for add_to_cart.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          product_id: { type: "integer", description: "Product ID from search_products or get_product." },
+        },
+        required: ["product_id"],
+      },
+      execute: async ({ product_id: productId }) => {
+        const numericId = parsePositiveInteger(productId, "product_id");
+        return request(buildWpUrl(`sentifyd/v1/products/${encodeURIComponent(numericId)}/related`));
+      },
+    },
+    {
+      name: "woocommerce.get_highlights",
+      provider: "woocommerce",
+      description: "List highlighted products for discovery: 'featured' store picks, 'on_sale' discounted products, or 'new' newest arrivals.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          type: { type: "string", description: "One of: featured, on_sale, new. Defaults to featured." },
+          per_page: { type: "integer", minimum: 1, maximum: 24, description: "Number of products. Defaults to 6." },
+        },
+      },
+      execute: async ({ type, per_page: perPage }) => {
+        const highlightType = ["featured", "on_sale", "new"].includes(String(type)) ? String(type) : "featured";
+        const limit = Math.min(Math.max(Number(perPage) || 6, 1), 24);
+        return request(buildWpUrl("sentifyd/v1/products/highlights", {
+          type: highlightType,
+          per_page: limit,
+        }));
+      },
+    },
+    {
+      name: "wordpress.get_menu",
+      provider: "wordpress",
+      description: "Retrieve the site's registered navigation menus as same-origin label/url trees. Use to discover key pages; use navigate_to_page for the actual navigation.",
+      inputSchema: { type: "object", properties: {} },
+      execute: async () => request(buildWpUrl("sentifyd/v1/menus")),
+    },
+    {
+      name: "wordpress.get_store_info",
+      provider: "wordpress",
+      description: "Retrieve public store information: name, currency, base location, contact email, and policy page links (terms, returns, privacy).",
+      inputSchema: { type: "object", properties: {} },
+      execute: async () => ({
+        store: config.storeInfo || null,
+        cartUrl: config.cartUrl || undefined,
+        checkoutUrl: config.checkoutUrl || undefined,
+      }),
     },
   ];
 

@@ -528,8 +528,12 @@ function sentifyd_enqueue_native_action_provider() {
     $capabilities = [
         'wordpress.search_posts',
         'wordpress.get_post',
+        'wordpress.get_menu',
+        'wordpress.get_store_info',
     ];
-    if (class_exists('WooCommerce')) {
+
+    $woocommerce_active = class_exists('WooCommerce');
+    if ($woocommerce_active) {
         $capabilities = array_merge($capabilities, [
             'woocommerce.search_products',
             'woocommerce.get_product',
@@ -537,10 +541,61 @@ function sentifyd_enqueue_native_action_provider() {
             'woocommerce.add_to_cart',
             'woocommerce.update_cart',
             'woocommerce.remove_from_cart',
+            'woocommerce.get_categories',
+            'woocommerce.apply_coupon',
+            'woocommerce.remove_coupon',
+            'woocommerce.get_product_reviews',
+            'woocommerce.get_related_products',
+            'woocommerce.get_highlights',
         ]);
     }
 
     $capabilities = apply_filters('sentifyd_action_provider_capabilities', $capabilities);
+
+    // Static, non-sensitive store context for the avatar: checkout handoff
+    // links and basic store identity. No credentials are exposed.
+    $config = [
+        'capabilities' => array_values($capabilities),
+        'wpApiRoot' => esc_url_raw(rest_url()),
+    ];
+
+    if ($woocommerce_active) {
+        $config['cartUrl'] = esc_url_raw(wc_get_cart_url());
+        $config['checkoutUrl'] = esc_url_raw(wc_get_checkout_url());
+
+        $policy_page_ids = [
+            'terms' => wc_get_page_id('terms'),
+            'returns' => wc_get_page_id('refund_returns'),
+            'privacy' => wc_get_page_id('privacy_policy'),
+        ];
+        $policy_pages = [];
+        foreach ($policy_page_ids as $key => $page_id) {
+            if ($page_id > 0) {
+                $permalink = get_permalink($page_id);
+                if ($permalink) {
+                    $policy_pages[$key] = esc_url_raw($permalink);
+                }
+            }
+        }
+
+        $config['storeInfo'] = [
+            'name' => get_bloginfo('name'),
+            'currency' => get_woocommerce_currency(),
+            'country' => WC()->countries->get_base_country(),
+            'baseAddress' => WC()->countries->get_base_address(),
+            'baseCity' => WC()->countries->get_base_city(),
+            'basePostcode' => WC()->countries->get_base_postcode(),
+            'storeEmail' => get_option('woocommerce_email_from_address'),
+            'sellingCountries' => array_values(WC()->countries->get_allowed_countries()),
+            'policyPages' => $policy_pages,
+        ];
+    } else {
+        $config['storeInfo'] = [
+            'name' => get_bloginfo('name'),
+            'storeEmail' => get_option('admin_email'),
+        ];
+    }
+
     wp_enqueue_script(
         'sentifyd-native-action-provider',
         plugins_url('assets/js/sentifyd-wp-provider.js', __FILE__),
@@ -550,10 +605,7 @@ function sentifyd_enqueue_native_action_provider() {
     );
     wp_add_inline_script(
         'sentifyd-native-action-provider',
-        'window.SentifydWordPressProvider = ' . wp_json_encode([
-            'capabilities' => array_values($capabilities),
-            'wpApiRoot' => esc_url_raw(rest_url()),
-        ]) . ';',
+        'window.SentifydWordPressProvider = ' . wp_json_encode($config) . ';',
         'before'
     );
 }
@@ -1125,6 +1177,62 @@ add_action('rest_api_init', function () {
             ],
         ],
     ]);
+
+    // Public, read-only product reviews (approved WooCommerce reviews only).
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/reviews', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_reviews',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+            'per_page' => [
+                'default' => 10,
+                'sanitize_callback' => 'absint',
+            ],
+        ],
+    ]);
+
+    // Public, read-only related products and upsells for a product.
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/related', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_related',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+        ],
+    ]);
+
+    // Public, read-only product highlights (featured / on-sale / newest).
+    register_rest_route('sentifyd/v1', '/products/highlights', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_highlights',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'type' => [
+                'default' => 'featured',
+                'sanitize_callback' => 'sanitize_key',
+            ],
+            'per_page' => [
+                'default' => 6,
+                'sanitize_callback' => 'absint',
+            ],
+        ],
+    ]);
+
+    // Public, read-only navigation menus (same-origin links only).
+    register_rest_route('sentifyd/v1', '/menus', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_menus',
+        'permission_callback' => '__return_true',
+    ]);
 });
 
 /**
@@ -1197,6 +1305,225 @@ function sentifyd_rest_product_variations( \WP_REST_Request $request ) {
     }
 
     return new \WP_REST_Response($variations, 200);
+}
+
+/**
+ * Build a compact product summary matching the Store API conventions used by
+ * the browser provider (price in minor units, public products only).
+ *
+ * @param \WC_Product $product WooCommerce product.
+ * @return array|null Summary or null when the product must not be exposed.
+ */
+function sentifyd_product_summary( $product ) {
+    if (!$product || $product->get_status() !== 'publish') {
+        return null;
+    }
+    if (function_exists('wc_get_product_visibility_term_ids')) {
+        $hidden = wc_get_product_visibility_term_ids();
+        if (has_term($hidden['exclude-from-catalog'], 'product_visibility', $product->get_id())) {
+            return null;
+        }
+    }
+
+    $minor_unit = (int) wc_get_price_decimals();
+    $price      = $product->get_price();
+
+    return [
+        'id'           => (int) $product->get_id(),
+        'name'         => wp_strip_all_tags($product->get_name()),
+        'description'  => wp_strip_all_tags($product->get_short_description()),
+        'price'        => $price === '' ? null : (string) intval(round(((float) $price) * pow(10, $minor_unit))),
+        'currency'     => get_woocommerce_currency(),
+        'currencyMinorUnit' => $minor_unit,
+        'inStock'      => (bool) $product->is_in_stock(),
+        'isPurchasable' => (bool) $product->is_purchasable(),
+        'hasOptions'   => (bool) $product->has_options(),
+        'permalink'    => get_permalink($product->get_id()),
+    ];
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/reviews
+ *
+ * Returns approved reviews for a published product. Only public display
+ * fields are exposed; no author email, IP, or other private data.
+ */
+function sentifyd_rest_product_reviews( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response(['reviews' => [], 'averageRating' => null, 'reviewCount' => 0], 200);
+    }
+
+    $product = wc_get_product((int) $request->get_param('id'));
+    if (!$product || $product->get_status() !== 'publish' || !$product->get_reviews_allowed()) {
+        return new \WP_REST_Response(['reviews' => [], 'averageRating' => null, 'reviewCount' => 0], 200);
+    }
+
+    $per_page = min(max((int) $request->get_param('per_page'), 1), 20);
+
+    $comments = get_comments([
+        'post_id' => $product->get_id(),
+        'status'  => 'approve',
+        'type'    => 'review',
+        'number'  => $per_page,
+    ]);
+
+    $reviews = [];
+    foreach ($comments as $comment) {
+        $rating = get_comment_meta($comment->comment_ID, 'rating', true);
+        $reviews[] = [
+            'rating' => is_numeric($rating) ? (int) $rating : null,
+            'text'   => mb_substr(trim(wp_strip_all_tags($comment->comment_content)), 0, 500),
+            'date'   => mysql2date('c', $comment->comment_date),
+        ];
+    }
+
+    return new \WP_REST_Response([
+        'reviews' => $reviews,
+        'averageRating' => $product->get_average_rating() !== '' ? (float) $product->get_average_rating() : null,
+        'reviewCount' => (int) $product->get_review_count(),
+    ], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/related
+ *
+ * Returns related products, upsells, and cross-sells as compact summaries.
+ */
+function sentifyd_rest_product_related( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response(['related' => [], 'upsells' => [], 'crossSells' => []], 200);
+    }
+
+    $product = wc_get_product((int) $request->get_param('id'));
+    if (!$product || $product->get_status() !== 'publish') {
+        return new \WP_REST_Response(['related' => [], 'upsells' => [], 'crossSells' => []], 200);
+    }
+
+    $summarize = function ($ids) {
+        $items = [];
+        foreach (array_slice((array) $ids, 0, 10) as $related_id) {
+            $summary = sentifyd_product_summary(wc_get_product($related_id));
+            if ($summary) {
+                $items[] = $summary;
+            }
+        }
+        return $items;
+    };
+
+    return new \WP_REST_Response([
+        'related' => $summarize(wc_get_related_products($product->get_id(), 10)),
+        'upsells' => $summarize($product->get_upsell_ids()),
+        'crossSells' => $summarize($product->get_cross_sell_ids()),
+    ], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/highlights?type=featured|on_sale|new
+ *
+ * Returns highlighted products for discovery-style browsing.
+ */
+function sentifyd_rest_product_highlights( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_products')) {
+        return new \WP_REST_Response(['products' => []], 200);
+    }
+
+    $type     = $request->get_param('type');
+    $per_page = min(max((int) $request->get_param('per_page'), 1), 24);
+
+    $args = [
+        'status' => 'publish',
+        'limit'  => $per_page,
+    ];
+
+    switch ($type) {
+        case 'on_sale':
+            $args['on_sale'] = true;
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            break;
+        case 'new':
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            break;
+        default:
+            $type = 'featured';
+            $args['featured'] = true;
+            break;
+    }
+
+    $products = [];
+    foreach (wc_get_products($args) as $product) {
+        $summary = sentifyd_product_summary($product);
+        if ($summary) {
+            $products[] = $summary;
+        }
+    }
+
+    return new \WP_REST_Response(['type' => $type, 'products' => $products], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/menus
+ *
+ * Returns registered navigation menus as same-origin {label, url, children}
+ * trees for site-navigation discovery.
+ */
+function sentifyd_rest_menus( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    $home_host = wp_parse_url(home_url(), PHP_URL_HOST);
+    $locations = get_nav_menu_locations();
+
+    $menus = [];
+    foreach ((array) $locations as $location => $menu_id) {
+        $items = wp_get_nav_menu_items($menu_id);
+        if (!$items) {
+            continue;
+        }
+
+        $by_parent = [];
+        foreach ($items as $item) {
+            $item_host = wp_parse_url($item->url, PHP_URL_HOST);
+            // Only expose same-origin links; drop external/custom junk.
+            if ($item_host && $home_host && strcasecmp($item_host, $home_host) !== 0) {
+                continue;
+            }
+            $by_parent[(int) $item->menu_item_parent][] = [
+                'label' => wp_strip_all_tags($item->title),
+                'url'   => esc_url_raw($item->url),
+                'id'    => (int) $item->ID,
+            ];
+        }
+
+        $build = function ($parent_id) use (&$build, $by_parent) {
+            $nodes = [];
+            foreach ($by_parent[$parent_id] ?? [] as $node) {
+                $children = $build($node['id']);
+                $nodes[] = [
+                    'label' => $node['label'],
+                    'url'   => $node['url'],
+                    'children' => $children,
+                ];
+            }
+            return $nodes;
+        };
+
+        $tree = $build(0);
+        if ($tree) {
+            $menus[] = [
+                'location' => sanitize_key($location),
+                'items'    => $tree,
+            ];
+        }
+    }
+
+    return new \WP_REST_Response(['menus' => $menus], 200);
 }
 
 /**
