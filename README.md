@@ -148,6 +148,22 @@ If you want full control over token issuance:
 3. The plugin will call your endpoint instead of the built-in one
 4. Your endpoint must return tokens in the expected format (see [documentation](https://docs.sentifyd.io))
 
+
+### Local Frontend Development
+
+With `SENTIFYD_DEV_MODE` explicitly set to `true` in `wp-config.php`, the plugin
+loads the frontend bundles from `http://localhost:7085` by default. To use a
+different frontend source server, set `SENTIFYD_DEV_FRONTEND_BASE_URL` as well:
+
+```php
+define('SENTIFYD_DEV_MODE', true);
+define('SENTIFYD_DEV_FRONTEND_BASE_URL', 'http://localhost:7085');
+```
+
+It uses
+`/sentifyd-bot/main.js` for Standard mode and
+`/sentifyd-realtime/v1/main.js` for Real-time mode. When
+`SENTIFYD_DEV_MODE` is not enabled, it uses the published Sentifyd frontend URL.
 ## 🚀 Usage
 
 ### As a Toggler (Default)

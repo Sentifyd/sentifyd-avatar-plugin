@@ -3,7 +3,7 @@ Contributors: sentifyd
 Tags: sentifyd, AI, avatars, agents, 3d avatar
 Requires at least: 6.3
 Tested up to: 6.8
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -28,6 +28,8 @@ With Sentifyd, your 3D AI agents can:
 * Connect with powerful tools like MCP servers and more, enabling task execution and contextual awareness.
 
 These agents can be easily embedded into your website or application, offering users a compelling, intelligent interface that feels truly alive.
+
+With compatible Sentifyd avatars, the plugin can search your published WordPress content and WooCommerce products, view product details and the current cart, and add, update, or remove cart items with visitor confirmation.
 
 **Get Started for Free**
 
@@ -117,6 +119,9 @@ No data is written to cookies or localStorage by the widget. Tokens are short-li
 
 
 == Changelog ==
+
+= 1.5.2 =
+* Added WordPress content search and WooCommerce product and cart actions for compatible Sentifyd avatars.
 
 = 1.5.1 =
 * Added support for opaque public avatar IDs while retaining compatibility with legacy numeric IDs.

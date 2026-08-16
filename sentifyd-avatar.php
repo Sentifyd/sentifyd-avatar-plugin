@@ -3,7 +3,7 @@
  * Plugin Name:       Sentifyd Avatar
  * Plugin URI:        https://github.com/Sentifyd/sentifyd-avatar-plugin
  * Description:       Easily deploy the Sentifyd avatar web component on your WordPress site.
- * Version:           1.5.1
+ * Version:           1.5.2
  * Requires at least: 6.3
  * Author:            Sentifyd.io
  * Author URI:        https://sentifyd.io/about-us
@@ -149,6 +149,7 @@ function sentifyd_sanitize_settings($input) {
     $sanitized['sentifyd_brand_logo']        = isset($input['sentifyd_brand_logo']) ? esc_url_raw($input['sentifyd_brand_logo']) : $sanitized['sentifyd_brand_logo'];
     $sanitized['sentifyd_avatar_background'] = isset($input['sentifyd_avatar_background']) ? sanitize_text_field($input['sentifyd_avatar_background']) : $sanitized['sentifyd_avatar_background'];
     $sanitized['sentifyd_radius_corner']     = isset($input['sentifyd_radius_corner']) ? sanitize_text_field($input['sentifyd_radius_corner']) : $sanitized['sentifyd_radius_corner'];
+    unset($sanitized['sentifyd_backend_base_url']);
     
     // Color fields
     $color_keys = [
@@ -405,6 +406,37 @@ function sentifyd_get_option($key, $default = '') {
 }
 
 /**
+ * Check whether local Sentifyd development services are explicitly enabled.
+ *
+ * @return bool
+ */
+function sentifyd_is_development_mode() {
+    return defined('SENTIFYD_DEV_MODE') && SENTIFYD_DEV_MODE;
+}
+
+/**
+ * Resolve the frontend origin used by local development bundles.
+ *
+ * @return string Frontend origin without a trailing slash.
+ */
+function sentifyd_get_frontend_base_url() {
+    $frontend_base = 'https://frontend.sentifyd.io';
+
+    if (sentifyd_is_development_mode()) {
+        $frontend_base = 'http://localhost:7085';
+        if (defined('SENTIFYD_DEV_FRONTEND_BASE_URL') && is_string(SENTIFYD_DEV_FRONTEND_BASE_URL)) {
+            $dev_frontend_base = trim(SENTIFYD_DEV_FRONTEND_BASE_URL);
+            if ($dev_frontend_base !== '') {
+                $frontend_base = $dev_frontend_base;
+            }
+        }
+        $frontend_base = apply_filters('sentifyd_frontend_base', $frontend_base);
+    }
+
+    return rtrim($frontend_base, '/');
+}
+
+/**
  * Return the active Sentifyd frontend component metadata.
  *
  * @param array|null $settings Optional settings array to avoid duplicate lookups.
@@ -414,20 +446,168 @@ function sentifyd_get_option($key, $default = '') {
 function sentifyd_get_component_config($settings = null) {
     $settings = is_array($settings) ? $settings : (array) get_option('sentifyd_settings', sentifyd_default_settings());
     $voice_mode = isset($settings['sentifyd_voice_mode']) ? sanitize_key($settings['sentifyd_voice_mode']) : 'standard';
+    $frontend_base = sentifyd_get_frontend_base_url();
 
     if ($voice_mode === 'realtime') {
-        return [
+        $component = [
             'voice_mode'  => 'realtime',
             'element_tag' => 'sentifyd-realtime',
-            'script_url'  => 'https://frontend.sentifyd.io/sentifyd-realtime/v1/main.js',
+            'script_url'  => $frontend_base . '/sentifyd-realtime/v1/main.js',
+        ];
+        return apply_filters('sentifyd_avatar_component_config', $component, $settings);
+    }
+
+    $component = [
+        'voice_mode'  => 'standard',
+        'element_tag' => 'sentifyd-bot',
+        'script_url'  => $frontend_base . '/sentifyd-bot/main.js',
+    ];
+    return apply_filters('sentifyd_avatar_component_config', $component, $settings);
+}
+
+/**
+ * Resolve the backend origin used by token exchange and the browser client.
+ *
+ * Production always uses the hosted backend. Local overrides are available
+ * only when SENTIFYD_DEV_MODE is explicitly enabled.
+ *
+ * @return string Backend origin without a trailing slash.
+ */
+function sentifyd_get_backend_base_url() {
+    $backend_base = 'https://serve.sentifyd.io';
+
+    if (sentifyd_is_development_mode()) {
+        if (defined('SENTIFYD_DEV_BACKEND_BASE_URL') && is_string(SENTIFYD_DEV_BACKEND_BASE_URL)) {
+            $dev_backend_base = trim(SENTIFYD_DEV_BACKEND_BASE_URL);
+            if ($dev_backend_base !== '') {
+                $backend_base = $dev_backend_base;
+            }
+        }
+    }
+
+    return rtrim(apply_filters('sentifyd_backend_base', $backend_base), '/');
+}
+
+/**
+ * Expose a debug-only backend override before the frontend module executes.
+ *
+ * @param string $handle Enqueued frontend script handle.
+ * @return void
+ */
+function sentifyd_enqueue_backend_override($handle = 'sentifyd-main') {
+    if (!sentifyd_is_development_mode()) {
+        return;
+    }
+
+    $backend_base = sentifyd_get_backend_base_url();
+    if ($backend_base === '' || $backend_base === 'https://serve.sentifyd.io') {
+        return;
+    }
+
+    // WordPress may run inside Docker while the browser runs on the host.
+    // The Docker-only hostname must be translated for browser requests.
+    $browser_backend_base = preg_replace(
+        '#^(https?://)(host\.docker\.internal|gateway\.docker\.internal)(?=[:/]|$)#i',
+        '$1localhost',
+        $backend_base
+    );
+
+    wp_add_inline_script(
+        $handle,
+        'window.VITE_APP_SOCKET_URL = ' . wp_json_encode($browser_backend_base) . ';',
+        'before'
+    );
+}
+
+/**
+ * Register the native same-origin WordPress and WooCommerce action provider.
+ * The provider exposes no credentials: it uses only the visitor's existing
+ * WordPress and WooCommerce browser session through public Store API routes.
+ */
+function sentifyd_enqueue_native_action_provider() {
+    $capabilities = [
+        'wordpress.search_posts',
+        'wordpress.get_post',
+        'wordpress.get_menu',
+        'wordpress.get_store_info',
+    ];
+
+    $woocommerce_active = class_exists('WooCommerce');
+    if ($woocommerce_active) {
+        $capabilities = array_merge($capabilities, [
+            'woocommerce.search_products',
+            'woocommerce.get_product',
+            'woocommerce.get_cart',
+            'woocommerce.add_to_cart',
+            'woocommerce.update_cart',
+            'woocommerce.remove_from_cart',
+            'woocommerce.get_categories',
+            'woocommerce.apply_coupon',
+            'woocommerce.remove_coupon',
+            'woocommerce.get_product_reviews',
+            'woocommerce.get_related_products',
+            'woocommerce.get_highlights',
+        ]);
+    }
+
+    $capabilities = apply_filters('sentifyd_action_provider_capabilities', $capabilities);
+
+    // Static, non-sensitive store context for the avatar: checkout handoff
+    // links and basic store identity. No credentials are exposed.
+    $config = [
+        'capabilities' => array_values($capabilities),
+        'wpApiRoot' => esc_url_raw(rest_url()),
+    ];
+
+    if ($woocommerce_active) {
+        $config['cartUrl'] = esc_url_raw(wc_get_cart_url());
+        $config['checkoutUrl'] = esc_url_raw(wc_get_checkout_url());
+
+        $policy_page_ids = [
+            'terms' => wc_get_page_id('terms'),
+            'returns' => wc_get_page_id('refund_returns'),
+            'privacy' => wc_get_page_id('privacy_policy'),
+        ];
+        $policy_pages = [];
+        foreach ($policy_page_ids as $key => $page_id) {
+            if ($page_id > 0) {
+                $permalink = get_permalink($page_id);
+                if ($permalink) {
+                    $policy_pages[$key] = esc_url_raw($permalink);
+                }
+            }
+        }
+
+        $config['storeInfo'] = [
+            'name' => get_bloginfo('name'),
+            'currency' => get_woocommerce_currency(),
+            'country' => WC()->countries->get_base_country(),
+            'baseAddress' => WC()->countries->get_base_address(),
+            'baseCity' => WC()->countries->get_base_city(),
+            'basePostcode' => WC()->countries->get_base_postcode(),
+            'storeEmail' => get_option('woocommerce_email_from_address'),
+            'sellingCountries' => array_values(WC()->countries->get_allowed_countries()),
+            'policyPages' => $policy_pages,
+        ];
+    } else {
+        $config['storeInfo'] = [
+            'name' => get_bloginfo('name'),
+            'storeEmail' => get_option('admin_email'),
         ];
     }
 
-    return [
-        'voice_mode'  => 'standard',
-        'element_tag' => 'sentifyd-bot',
-        'script_url'  => 'https://frontend.sentifyd.io/sentifyd-bot/main.js',
-    ];
+    wp_enqueue_script(
+        'sentifyd-native-action-provider',
+        plugins_url('assets/js/sentifyd-wp-provider.js', __FILE__),
+        [],
+        SENTIFYD_AVATAR_VERSION,
+        true
+    );
+    wp_add_inline_script(
+        'sentifyd-native-action-provider',
+        'window.SentifydWordPressProvider = ' . wp_json_encode($config) . ';',
+        'before'
+    );
 }
 
 function sentifyd_api_key_render() {
@@ -797,6 +977,7 @@ function sentifyd_avatar_shortcode($atts) {
     }
 
     $component = sentifyd_get_component_config();
+    sentifyd_enqueue_native_action_provider();
 
     // Ensure the script is present; element can be inline without auto-injection
     wp_enqueue_script(
@@ -809,6 +990,7 @@ function sentifyd_avatar_shortcode($atts) {
             'strategy'  => 'async',
         ]
     );
+    sentifyd_enqueue_backend_override('sentifyd-main');
 
     $atts = shortcode_atts(
         [
@@ -890,6 +1072,8 @@ function sentifyd_deploy_bot() {
         return;
     }
 
+    sentifyd_enqueue_native_action_provider();
+
     wp_enqueue_script(
         'sentifyd-main',
         $component['script_url'],
@@ -900,6 +1084,7 @@ function sentifyd_deploy_bot() {
             'strategy'  => 'async',
         ]
     );
+    sentifyd_enqueue_backend_override('sentifyd-main');
 
     $inline_script = "document.addEventListener('DOMContentLoaded', function() {\n        if (!document.querySelector(" . wp_json_encode($component['element_tag']) . ")) {\n            document.body.insertAdjacentHTML('beforeend', " . wp_json_encode($bot_tag) . ");\n        }\n    });";
 
@@ -976,7 +1161,370 @@ add_action('rest_api_init', function () {
             return true;
         },
     ]);
+
+    // Public, read-only product variation summaries for the avatar provider.
+    // Mirrors the WooCommerce Store API visibility rules: only published,
+    // purchasable-relevant fields are exposed, and only for public products.
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/variations', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_variations',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+        ],
+    ]);
+
+    // Public, read-only product reviews (approved WooCommerce reviews only).
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/reviews', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_reviews',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+            'per_page' => [
+                'default' => 10,
+                'sanitize_callback' => 'absint',
+            ],
+        ],
+    ]);
+
+    // Public, read-only related products and upsells for a product.
+    register_rest_route('sentifyd/v1', '/products/(?P<id>\d+)/related', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_related',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => [
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && (int) $param > 0;
+                },
+            ],
+        ],
+    ]);
+
+    // Public, read-only product highlights (featured / on-sale / newest).
+    register_rest_route('sentifyd/v1', '/products/highlights', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_product_highlights',
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'type' => [
+                'default' => 'featured',
+                'sanitize_callback' => 'sanitize_key',
+            ],
+            'per_page' => [
+                'default' => 6,
+                'sanitize_callback' => 'absint',
+            ],
+        ],
+    ]);
+
+    // Public, read-only navigation menus (same-origin links only).
+    register_rest_route('sentifyd/v1', '/menus', [
+        'methods'             => 'GET',
+        'callback'            => 'sentifyd_rest_menus',
+        'permission_callback' => '__return_true',
+    ]);
 });
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/variations
+ *
+ * Returns a compact, safe list of purchasable variation summaries for a
+ * published variable product. Avoids the need for the browser provider to
+ * scrape the product page HTML for `data-product_variations`.
+ *
+ * Response shape: array of variation summaries, e.g.
+ * [
+ *   {
+ *     "id": 123,
+ *     "attributes": { "attribute_color": "blue", "attribute_size": "m" },
+ *     "price": "1999",
+ *     "currency": "USD",
+ *     "currencyMinorUnit": 2,
+ *     "inStock": true,
+ *     "isPurchasable": true
+ *   }
+ * ]
+ */
+function sentifyd_rest_product_variations( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response([], 200);
+    }
+
+    $product_id = (int) $request->get_param('id');
+    $product    = wc_get_product($product_id);
+
+    // Only expose variations for published, publicly-visible products.
+    if (!$product || $product->get_status() !== 'publish') {
+        return new \WP_REST_Response([], 200);
+    }
+
+    if (!$product->is_type('variable')) {
+        return new \WP_REST_Response([], 200);
+    }
+
+    $prices     = $product->get_variation_prices(true);
+    $currency   = get_woocommerce_currency();
+    $minor_unit = (int) wc_get_price_decimals();
+
+    $variations = [];
+    foreach ($product->get_children() as $variation_id) {
+        $variation = wc_get_product($variation_id);
+        if (!$variation || !$variation->is_type('variation')) {
+            continue;
+        }
+        if (!$variation->variation_is_visible()) {
+            continue;
+        }
+
+        // Price in the store's minor units, matching Store API conventions.
+        $price = isset($prices['price'][$variation_id]) && $prices['price'][$variation_id] !== ''
+            ? (string) intval(round(((float) $prices['price'][$variation_id]) * pow(10, $minor_unit)))
+            : null;
+
+        $variations[] = [
+            'id'                => (int) $variation_id,
+            'attributes'        => $variation->get_attributes(),
+            'price'             => $price,
+            'currency'          => $currency,
+            'currencyMinorUnit' => $minor_unit,
+            'inStock'           => (bool) $variation->is_in_stock(),
+            'isPurchasable'     => (bool) $variation->is_purchasable(),
+        ];
+    }
+
+    return new \WP_REST_Response($variations, 200);
+}
+
+/**
+ * Build a compact product summary matching the Store API conventions used by
+ * the browser provider (price in minor units, public products only).
+ *
+ * @param \WC_Product $product WooCommerce product.
+ * @return array|null Summary or null when the product must not be exposed.
+ */
+function sentifyd_product_summary( $product ) {
+    if (!$product || $product->get_status() !== 'publish') {
+        return null;
+    }
+    if (function_exists('wc_get_product_visibility_term_ids')) {
+        $hidden = wc_get_product_visibility_term_ids();
+        if (has_term($hidden['exclude-from-catalog'], 'product_visibility', $product->get_id())) {
+            return null;
+        }
+    }
+
+    $minor_unit = (int) wc_get_price_decimals();
+    $price      = $product->get_price();
+
+    return [
+        'id'           => (int) $product->get_id(),
+        'name'         => wp_strip_all_tags($product->get_name()),
+        'description'  => wp_strip_all_tags($product->get_short_description()),
+        'price'        => $price === '' ? null : (string) intval(round(((float) $price) * pow(10, $minor_unit))),
+        'currency'     => get_woocommerce_currency(),
+        'currencyMinorUnit' => $minor_unit,
+        'inStock'      => (bool) $product->is_in_stock(),
+        'isPurchasable' => (bool) $product->is_purchasable(),
+        'hasOptions'   => (bool) $product->has_options(),
+        'permalink'    => get_permalink($product->get_id()),
+    ];
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/reviews
+ *
+ * Returns approved reviews for a published product. Only public display
+ * fields are exposed; no author email, IP, or other private data.
+ */
+function sentifyd_rest_product_reviews( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response(['reviews' => [], 'averageRating' => null, 'reviewCount' => 0], 200);
+    }
+
+    $product = wc_get_product((int) $request->get_param('id'));
+    if (!$product || $product->get_status() !== 'publish' || !$product->get_reviews_allowed()) {
+        return new \WP_REST_Response(['reviews' => [], 'averageRating' => null, 'reviewCount' => 0], 200);
+    }
+
+    $per_page = min(max((int) $request->get_param('per_page'), 1), 20);
+
+    $comments = get_comments([
+        'post_id' => $product->get_id(),
+        'status'  => 'approve',
+        'type'    => 'review',
+        'number'  => $per_page,
+    ]);
+
+    $reviews = [];
+    foreach ($comments as $comment) {
+        $rating = get_comment_meta($comment->comment_ID, 'rating', true);
+        $reviews[] = [
+            'rating' => is_numeric($rating) ? (int) $rating : null,
+            'text'   => mb_substr(trim(wp_strip_all_tags($comment->comment_content)), 0, 500),
+            'date'   => mysql2date('c', $comment->comment_date),
+        ];
+    }
+
+    return new \WP_REST_Response([
+        'reviews' => $reviews,
+        'averageRating' => $product->get_average_rating() !== '' ? (float) $product->get_average_rating() : null,
+        'reviewCount' => (int) $product->get_review_count(),
+    ], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/{id}/related
+ *
+ * Returns related products, upsells, and cross-sells as compact summaries.
+ */
+function sentifyd_rest_product_related( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_product')) {
+        return new \WP_REST_Response(['related' => [], 'upsells' => [], 'crossSells' => []], 200);
+    }
+
+    $product = wc_get_product((int) $request->get_param('id'));
+    if (!$product || $product->get_status() !== 'publish') {
+        return new \WP_REST_Response(['related' => [], 'upsells' => [], 'crossSells' => []], 200);
+    }
+
+    $summarize = function ($ids) {
+        $items = [];
+        foreach (array_slice((array) $ids, 0, 10) as $related_id) {
+            $summary = sentifyd_product_summary(wc_get_product($related_id));
+            if ($summary) {
+                $items[] = $summary;
+            }
+        }
+        return $items;
+    };
+
+    return new \WP_REST_Response([
+        'related' => $summarize(wc_get_related_products($product->get_id(), 10)),
+        'upsells' => $summarize($product->get_upsell_ids()),
+        'crossSells' => $summarize($product->get_cross_sell_ids()),
+    ], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/products/highlights?type=featured|on_sale|new
+ *
+ * Returns highlighted products for discovery-style browsing.
+ */
+function sentifyd_rest_product_highlights( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    if (!class_exists('WooCommerce') || !function_exists('wc_get_products')) {
+        return new \WP_REST_Response(['products' => []], 200);
+    }
+
+    $type     = $request->get_param('type');
+    $per_page = min(max((int) $request->get_param('per_page'), 1), 24);
+
+    $args = [
+        'status' => 'publish',
+        'limit'  => $per_page,
+    ];
+
+    switch ($type) {
+        case 'on_sale':
+            $args['on_sale'] = true;
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            break;
+        case 'new':
+            $args['orderby'] = 'date';
+            $args['order']   = 'DESC';
+            break;
+        default:
+            $type = 'featured';
+            $args['featured'] = true;
+            break;
+    }
+
+    $products = [];
+    foreach (wc_get_products($args) as $product) {
+        $summary = sentifyd_product_summary($product);
+        if ($summary) {
+            $products[] = $summary;
+        }
+    }
+
+    return new \WP_REST_Response(['type' => $type, 'products' => $products], 200);
+}
+
+/**
+ * GET /wp-json/sentifyd/v1/menus
+ *
+ * Returns registered navigation menus as same-origin {label, url, children}
+ * trees for site-navigation discovery.
+ */
+function sentifyd_rest_menus( \WP_REST_Request $request ) {
+    nocache_headers();
+
+    $home_host = wp_parse_url(home_url(), PHP_URL_HOST);
+    $locations = get_nav_menu_locations();
+
+    $menus = [];
+    foreach ((array) $locations as $location => $menu_id) {
+        $items = wp_get_nav_menu_items($menu_id);
+        if (!$items) {
+            continue;
+        }
+
+        $by_parent = [];
+        foreach ($items as $item) {
+            $item_host = wp_parse_url($item->url, PHP_URL_HOST);
+            // Only expose same-origin links; drop external/custom junk.
+            if ($item_host && $home_host && strcasecmp($item_host, $home_host) !== 0) {
+                continue;
+            }
+            $by_parent[(int) $item->menu_item_parent][] = [
+                'label' => wp_strip_all_tags($item->title),
+                'url'   => esc_url_raw($item->url),
+                'id'    => (int) $item->ID,
+            ];
+        }
+
+        $build = function ($parent_id) use (&$build, $by_parent) {
+            $nodes = [];
+            foreach ($by_parent[$parent_id] ?? [] as $node) {
+                $children = $build($node['id']);
+                $nodes[] = [
+                    'label' => $node['label'],
+                    'url'   => $node['url'],
+                    'children' => $children,
+                ];
+            }
+            return $nodes;
+        };
+
+        $tree = $build(0);
+        if ($tree) {
+            $menus[] = [
+                'location' => sanitize_key($location),
+                'items'    => $tree,
+            ];
+        }
+    }
+
+    return new \WP_REST_Response(['menus' => $menus], 200);
+}
 
 /**
  * GET /wp-json/sentifyd/v1/request_tokens
@@ -1010,7 +1558,9 @@ function sentifyd_rest_request_tokens( \WP_REST_Request $request ) {
     }
 
     // Tiny cache per avatar to reduce upstream load
-    $cache_key = 'sentifyd_token_' . md5((string) $avatar_id);
+    $backend_base = sentifyd_get_backend_base_url();
+
+    $cache_key = 'sentifyd_token_' . md5((string) $avatar_id . '|' . $backend_base);
     $cached    = get_transient($cache_key);
     if (is_array($cached) && !empty($cached['tokens']) && isset($cached['expires_at']) && (time() < ((int) $cached['expires_at'] - 10))) {
         return new \WP_REST_Response([
@@ -1018,10 +1568,6 @@ function sentifyd_rest_request_tokens( \WP_REST_Request $request ) {
             'avatarParameters' => $cached['avatarParameters'] ?? null,
         ], 200);
     }
-
-    // Backend origin — allow integrators to override via filter.
-    $backend_base = 'https://serve.sentifyd.io';
-    $backend_base = rtrim(apply_filters('sentifyd_backend_base', $backend_base), '/');
 
     $login_endpoints = [
         $backend_base . '/api/v1/chatbot/login',
